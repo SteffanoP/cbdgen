@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import multiprocessing
 import pickle
 from sklearn.datasets import make_blobs, make_moons, make_circles
+from sklearn.datasets import load_iris
 from matplotlib import pyplot
 from pandas import DataFrame
 
@@ -17,9 +18,9 @@ import rpy2.robjects as robjects
 import rpy2.robjects.packages as rpackages
 
 from rpy2.robjects import pandas2ri
-from rpy2.robjects.packages import SignatureTranslatedAnonymousPackage as STAP
 from rpy2.robjects import IntVector, Formula
 pandas2ri.activate()
+ecol = rpackages.importr('ECoL')
 
 cont = 0
 bobj = 0.4
@@ -27,7 +28,7 @@ P = [12]
 SCALES = [1]
 tread = ""
 ok = "0"
-NGEN = 100
+NGEN = 10
 CXPB = 0.7
 MUTPB = 0.2
 INDPB = 0.05
@@ -111,7 +112,11 @@ while ok == "0":
           "Esse é o dataset que deseja utilizar? 1 - sim / 0 - não ")
       ok = "1"
 
-filename = "Ferramenta"
+filename = "NGEN=10000"
+
+print("Você deseja basear as métricas a um dataset já existente? (y/N)")
+escolha = input()
+
 print("Escolha quais métricas deseja otimizar (separe com espaço)")
 print("Class imbalance C2 = 1")
 print("Linearity L2 = 2")
@@ -123,34 +128,75 @@ print("Feature-based F1 = 6")
 metricas = input("Métrica: ")
 
 metricasList = metricas.split()
+
+if (escolha == 'y'):
+    base_dataset = load_iris()
+
+    base_df = pd.DataFrame(data=np.c_[base_dataset['data'], base_dataset['target']], columns=base_dataset['feature_names'] + ['target'])
+
+    r_base_df = pandas2ri.py2rpy(base_df)
+    fml = Formula('target ~ .')
+
+    if ("1" in metricasList):
+        c2Vector = ecol.correlation_formula(
+            fml, r_base_df, measures="C2", summary="return")
+        objetivo_c2 = c2Vector.rx(1)
+        globalBalance = float(objetivo_c2[0][0])
+    if ("2" in metricasList):
+        l2Vector = ecol.linearity_formula(
+            fml, r_base_df, measures="L2", summary="return")
+        objetivo_l2 = l2Vector.rx(1)
+        globalLinear = float(objetivo_l2[0][0])
+        print(globalLinear)
+    if ("3" in metricasList):
+        n2Vector = n2Vector = ecol.neighborhood_formula(
+            fml, r_base_df, measures="N2", summary="return")
+        objetivo_n2 = n2Vector.rx(1)
+        globalN2 = float(objetivo_n2[0][0])
+    if ("4" in metricasList):
+        clscoefVector = ecol.network_formula(
+            fml, r_base_df, measures="ClsCoef", summary="return")
+        objetivo_clscoef = clscoefVector.rx(1)
+        globalClsCoef = float(objetivo_clscoef[0][0])
+        print(globalClsCoef)
+    if ("5" in metricasList):
+        t2Vector = ecol.dimensionality_formula(
+            fml, r_base_df, measures="T2", summary="return")
+        globalt2 = float(t2Vector[0])
+        print(globalt2)
+    if ("6" in metricasList):
+        f1Vector = ecol.overlapping_formula(
+            fml, df, measures="F1", summary="return")
+        objetivo_f1 = f1Vector.rx(1)
+        globalf1 = float(objetivo_f1)
+else:
+    if ("1" in metricasList):
+        objetivo = input(
+            "Escolha os valores que deseja alcançar para: Class imbalance C2")
+        globalBalance = float(objetivo)
+    if ("2" in metricasList):
+        objetivo = input(
+            "Escolha os valores que deseja alcançar para: Linearity L2")
+        globalLinear = float(objetivo)
+    if ("3" in metricasList):
+        objetivo = input(
+            "Escolha os valores que deseja alcançar para: Neighborhood N2")
+        globalN2 = float(objetivo)
+    if ("4" in metricasList):
+        objetivo = input(
+            "Escolha os valores que deseja alcançar para: Network ClsCoef")
+        globalClsCoef = float(objetivo)
+    if ("5" in metricasList):
+        objetivo = input(
+            "Escolha os valores que deseja alcançar para: Dimensionality T2")
+        globalt2 = float(objetivo)
+    if ("6" in metricasList):
+        objetivo = input(
+            "Escolha os valores que deseja alcançar para: Feature-based F1")
+        globalf1 = float(objetivo)
+
 N_ATTRIBUTES = int(n_instancias)
 NOBJ = len(metricasList)
-
-if ("1" in metricasList):
-    objetivo = input(
-        "Escolha os valores que deseja alcançar para: Class imbalance C2")
-    globalBalance = float(objetivo)
-if ("2" in metricasList):
-    objetivo = input(
-        "Escolha os valores que deseja alcançar para: Linearity L2")
-    globalLinear = float(objetivo)
-if ("3" in metricasList):
-    objetivo = input(
-        "Escolha os valores que deseja alcançar para: Neighborhood N2")
-    globalN2 = float(objetivo)
-if ("4" in metricasList):
-    objetivo = input(
-        "Escolha os valores que deseja alcançar para: Network ClsCoef")
-    globalClsCoef = float(objetivo)
-if ("5" in metricasList):
-    objetivo = input(
-        "Escolha os valores que deseja alcançar para: Dimensionality T2")
-    globalt2 = float(objetivo)
-if ("6" in metricasList):
-    objetivo = input(
-        "Escolha os valores que deseja alcançar para: Feature-based F1")
-    globalf1 = float(objetivo)
-
 
 dic = {}
 
@@ -160,10 +206,6 @@ ref_points = [tools.uniform_reference_points(
 ref_points = np.concatenate(ref_points)
 _, uniques = np.unique(ref_points, axis=0, return_index=True)
 ref_points = ref_points[uniques]
-
-
-ecol = rpackages.importr('ECoL')
-
 
 def my_evaluate(individual):
     vetor = []
@@ -198,8 +240,7 @@ def my_evaluate(individual):
         ## -- Dimensionality T2
         t2Vector = ecol.dimensionality_formula(
             fmla, dataFrame, measures="T2", summary="return")
-        t2 = t2Vector.rx(1)
-        vetor.append(abs(globalt2 - t2[0]))
+        vetor.append(abs(globalt2 - t2Vector[0]))
     if ("6" in metricasList):
         ## -- Feature-based F1
         f1Vector = ecol.overlapping_formula(
@@ -250,8 +291,7 @@ def print_evaluate(individual):
         ## -- Dimensionality T2
         t2Vector = ecol.dimensionality_formula(
             fmla, dataFrame, measures="T2", summary="return")
-        t2 = t2Vector.rx(1)
-        vetor.append(t2[0])
+        vetor.append(t2Vector[0])
     if ("6" in metricasList):
         ## -- Feature-based F1
         f1Vector = ecol.overlapping_formula(
@@ -346,6 +386,7 @@ if __name__ == '__main__':
         outfile.close()
 
     df['label'] = results[0][0]
+    df.to_csv(str(filename)+".csv")
     fig, ax = pyplot.subplots()
     grouped = df.groupby('label')
     for key, group in grouped:
