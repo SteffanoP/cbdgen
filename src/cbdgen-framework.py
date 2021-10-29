@@ -112,7 +112,7 @@ while ok == "0":
           "Esse é o dataset que deseja utilizar? 1 - sim / 0 - não ")
       ok = "1"
 
-filename = "NGEN=10000"
+filename = "NGEN=" + str(NGEN)
 
 print("Você deseja basear as métricas a um dataset já existente? (y/N)")
 escolha = input()
@@ -142,58 +142,70 @@ if (escolha == 'y'):
             fml, r_base_df, measures="C2", summary="return")
         objetivo_c2 = c2Vector.rx(1)
         globalBalance = float(objetivo_c2[0][0])
+        filename += "-C2"
     if ("2" in metricasList):
         l2Vector = ecol.linearity_formula(
             fml, r_base_df, measures="L2", summary="return")
         objetivo_l2 = l2Vector.rx(1)
         globalLinear = float(objetivo_l2[0][0])
         print(globalLinear)
+        filename += "-L2"
     if ("3" in metricasList):
         n2Vector = n2Vector = ecol.neighborhood_formula(
             fml, r_base_df, measures="N2", summary="return")
         objetivo_n2 = n2Vector.rx(1)
         globalN2 = float(objetivo_n2[0][0])
+        filename += "-N2"
     if ("4" in metricasList):
         clscoefVector = ecol.network_formula(
             fml, r_base_df, measures="ClsCoef", summary="return")
         objetivo_clscoef = clscoefVector.rx(1)
         globalClsCoef = float(objetivo_clscoef[0][0])
         print(globalClsCoef)
+        filename += "-CLSCOEF"
     if ("5" in metricasList):
         t2Vector = ecol.dimensionality_formula(
             fml, r_base_df, measures="T2", summary="return")
         globalt2 = float(t2Vector[0])
         print(globalt2)
+        filename += "-T2"
     if ("6" in metricasList):
         f1Vector = ecol.overlapping_formula(
             fml, df, measures="F1", summary="return")
         objetivo_f1 = f1Vector.rx(1)
         globalf1 = float(objetivo_f1)
+        filename += "-F1"
 else:
     if ("1" in metricasList):
         objetivo = input(
             "Escolha os valores que deseja alcançar para: Class imbalance C2")
         globalBalance = float(objetivo)
+        filename += "-C2"
     if ("2" in metricasList):
         objetivo = input(
             "Escolha os valores que deseja alcançar para: Linearity L2")
         globalLinear = float(objetivo)
+        filename += "-L2"
     if ("3" in metricasList):
         objetivo = input(
             "Escolha os valores que deseja alcançar para: Neighborhood N2")
         globalN2 = float(objetivo)
+        filename += "-N2"
     if ("4" in metricasList):
         objetivo = input(
             "Escolha os valores que deseja alcançar para: Network ClsCoef")
         globalClsCoef = float(objetivo)
+        filename += "-CLSCOEF"
     if ("5" in metricasList):
         objetivo = input(
             "Escolha os valores que deseja alcançar para: Dimensionality T2")
         globalt2 = float(objetivo)
+        filename += "-T2"
     if ("6" in metricasList):
         objetivo = input(
             "Escolha os valores que deseja alcançar para: Feature-based F1")
         globalf1 = float(objetivo)
+        filename += "-F1"
 
 N_ATTRIBUTES = int(n_instancias)
 NOBJ = len(metricasList)
