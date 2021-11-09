@@ -15,12 +15,6 @@ from deap import tools
 from deap import algorithms
 
 import rpy2.robjects as robjects
-import rpy2.robjects.packages as rpackages
-
-from rpy2.robjects import pandas2ri
-from rpy2.robjects import IntVector, Formula
-pandas2ri.activate()
-ecol = rpackages.importr('ECoL')
 
 import complexity as complx
 
@@ -133,10 +127,7 @@ metricasList = metricas.split()
 
 if (escolha == 'y'):
     base_dataset = load_iris()
-
     base_df = pd.DataFrame(data=np.c_[base_dataset['data'], base_dataset['target']], columns=base_dataset['feature_names'] + ['target'])
-
-    r_base_df = pandas2ri.py2rpy(base_df)
     target = "target"
 
     if ("1" in metricasList):
