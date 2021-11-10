@@ -15,12 +15,8 @@ from deap import tools
 from deap import algorithms
 
 import rpy2.robjects as robjects
-import rpy2.robjects.packages as rpackages
 
-from rpy2.robjects import pandas2ri
-from rpy2.robjects import IntVector, Formula
-pandas2ri.activate()
-ecol = rpackages.importr('ECoL')
+import complexity as complx
 
 cont = 0
 bobj = 0.4
@@ -28,7 +24,7 @@ P = [12]
 SCALES = [1]
 tread = ""
 ok = "0"
-NGEN = 10
+NGEN = 1000
 CXPB = 0.7
 MUTPB = 0.2
 INDPB = 0.05
@@ -131,49 +127,29 @@ metricasList = metricas.split()
 
 if (escolha == 'y'):
     base_dataset = load_iris()
-
     base_df = pd.DataFrame(data=np.c_[base_dataset['data'], base_dataset['target']], columns=base_dataset['feature_names'] + ['target'])
-
-    r_base_df = pandas2ri.py2rpy(base_df)
-    fml = Formula('target ~ .')
+    target = "target"
 
     if ("1" in metricasList):
-        c2Vector = ecol.correlation_formula(
-            fml, r_base_df, measures="C2", summary="return")
-        objetivo_c2 = c2Vector.rx(1)
-        globalBalance = float(objetivo_c2[0][0])
+        globalBalance = complx.balance(base_df, target, "C2")
         filename += "-C2"
     if ("2" in metricasList):
-        l2Vector = ecol.linearity_formula(
-            fml, r_base_df, measures="L2", summary="return")
-        objetivo_l2 = l2Vector.rx(1)
-        globalLinear = float(objetivo_l2[0][0])
+        globalLinear = complx.linearity(base_df, target, "L2")
         print(globalLinear)
         filename += "-L2"
     if ("3" in metricasList):
-        n2Vector = n2Vector = ecol.neighborhood_formula(
-            fml, r_base_df, measures="N2", summary="return")
-        objetivo_n2 = n2Vector.rx(1)
-        globalN2 = float(objetivo_n2[0][0])
+        globalN2 = complx.neighborhood(base_df, target, "N2")
         filename += "-N2"
     if ("4" in metricasList):
-        clscoefVector = ecol.network_formula(
-            fml, r_base_df, measures="ClsCoef", summary="return")
-        objetivo_clscoef = clscoefVector.rx(1)
-        globalClsCoef = float(objetivo_clscoef[0][0])
+        globalClsCoef = complx.network(base_df, target, "ClsCoef")
         print(globalClsCoef)
         filename += "-CLSCOEF"
     if ("5" in metricasList):
-        t2Vector = ecol.dimensionality_formula(
-            fml, r_base_df, measures="T2", summary="return")
-        globalt2 = float(t2Vector[0])
+        globalt2 = complx.dimensionality(base_df, target, "T2")
         print(globalt2)
         filename += "-T2"
     if ("6" in metricasList):
-        f1Vector = ecol.overlapping_formula(
-            fml, df, measures="F1", summary="return")
-        objetivo_f1 = f1Vector.rx(1)
-        globalf1 = float(objetivo_f1)
+        globalf1 = complx.feature(base_df, target, "F1")
         filename += "-F1"
 else:
     if ("1" in metricasList):
@@ -223,42 +199,26 @@ def my_evaluate(individual):
     vetor = []
     dataFrame['label'] = individual
     robjects.globalenv['dataFrame'] = dataFrame
-    fmla = Formula('label ~ .')
+    target = "label"
+
     if("1" in metricasList):
-        ##imbalance
-        imbalanceVector = ecol.balance_formula(
-            fmla, dataFrame, measures="C2", summary="return")
-        imbalance = imbalanceVector.rx(1)
-        vetor.append(abs(globalBalance - imbalance[0][0]))
+        imbalance = complx.balance(dataFrame, target, "C2")
+        vetor.append(abs(globalBalance - imbalance))
     if ("2" in metricasList):
-        ## -- linearity
-        linearityVector = ecol.linearity_formula(
-            fmla, dataFrame, measures="L2", summary="return")
-        linearity = linearityVector.rx(1)
-        vetor.append(abs(globalLinear - linearity[0][0]))
+        linearity = complx.linearity(dataFrame, target, "L2")
+        vetor.append(abs(globalLinear - linearity))
     if ("3" in metricasList):
-        ## -- neighborhood N2
-        n2Vector = ecol.neighborhood_formula(
-            fmla, dataFrame, measures="N2", summary="return")
-        n2 = n2Vector.rx(1)
-        vetor.append(abs(globalN2 - n2[0][0]))
+        n2 = complx.neighborhood(dataFrame, target, "N2")
+        vetor.append(abs(globalN2 - n2))
     if ("4" in metricasList):
-        ## -- Network ClsCoef
-        ClsCoefVector = ecol.network_formula(
-            fmla, dataFrame, measures="ClsCoef", summary="return")
-        ClsCoef = ClsCoefVector.rx(1)
-        vetor.append(abs(globalClsCoef - ClsCoef[0][0]))
+        ClsCoef = complx.network(dataFrame, target, "ClsCoef")
+        vetor.append(abs(globalClsCoef - ClsCoef))
     if ("5" in metricasList):
-        ## -- Dimensionality T2
-        t2Vector = ecol.dimensionality_formula(
-            fmla, dataFrame, measures="T2", summary="return")
-        vetor.append(abs(globalt2 - t2Vector[0]))
+        t2 = complx.dimensionality(dataFrame, target, "T2")
+        vetor.append(abs(globalt2 - t2))
     if ("6" in metricasList):
-        ## -- Feature-based F1
-        f1Vector = ecol.overlapping_formula(
-            fmla, dataFrame, measures="F1", summary="return")
-        f1 = f1Vector.rx(1)
-        vetor.append(abs(globalf1 - f1[0][0]))
+        f1 = complx.feature(dataFrame, target, "F1")
+        vetor.append(abs(globalf1 - f1))
     ## --
     if(len(vetor) == 1):
         return vetor[0],
@@ -274,42 +234,25 @@ def print_evaluate(individual):
     vetor = []
     dataFrame['label'] = individual
     robjects.globalenv['dataFrame'] = dataFrame
-    fmla = Formula('label ~ .')
+    target = "label"
     if("1" in metricasList):
-        ##imbalance
-        imbalanceVector = ecol.balance_formula(
-            fmla, dataFrame, measures="C2", summary="return")
-        imbalance = imbalanceVector.rx(1)
-        vetor.append(imbalance[0][0])
+        imbalance = complx.balance(dataFrame, target, "C2")
+        vetor.append(abs(imbalance))
     if ("2" in metricasList):
-        ## -- linearity
-        linearityVector = ecol.linearity_formula(
-            fmla, dataFrame, measures="L2", summary="return")
-        linearity = linearityVector.rx(1)
-        vetor.append(linearity[0][0])
+        linearity = complx.linearity(dataFrame, target, "L2")
+        vetor.append(abs(linearity))
     if ("3" in metricasList):
-        ## -- neighborhood N2
-        n2Vector = ecol.neighborhood_formula(
-            fmla, dataFrame, measures="N2", summary="return")
-        n2 = n2Vector.rx(1)
-        vetor.append(n2[0][0])
+        n2 = complx.neighborhood(dataFrame, target, "N2")
+        vetor.append(abs(n2))
     if ("4" in metricasList):
-        ## -- Network ClsCoef
-        ClsCoefVector = ecol.network_formula(
-            fmla, dataFrame, measures="ClsCoef", summary="return")
-        ClsCoef = ClsCoefVector.rx(1)
-        vetor.append(ClsCoef[0][0])
+        ClsCoef = complx.network(dataFrame, target, "ClsCoef")
+        vetor.append(abs(ClsCoef))
     if ("5" in metricasList):
-        ## -- Dimensionality T2
-        t2Vector = ecol.dimensionality_formula(
-            fmla, dataFrame, measures="T2", summary="return")
-        vetor.append(t2Vector[0])
+        t2 = complx.dimensionality(dataFrame, target, "T2")
+        vetor.append(abs(t2))
     if ("6" in metricasList):
-        ## -- Feature-based F1
-        f1Vector = ecol.overlapping_formula(
-            fmla, dataFrame, measures="F1", summary="return")
-        f1 = f1Vector.rx(1)
-        vetor.append(f1[0][0])
+        f1 = complx.feature(dataFrame, target, "F1")
+        vetor.append(abs(f1))
     ## --
     if(len(vetor) == 1):
         return vetor[0],
