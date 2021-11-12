@@ -1,2 +1,3 @@
 examples/* linguist-detectable=false
 examples/* linguist-documentation
+examples/* linguist-vendored
