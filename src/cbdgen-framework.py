@@ -17,6 +17,7 @@ from deap import algorithms
 import rpy2.robjects as robjects
 
 import complexity as complx
+import generate
 
 cont = 0
 bobj = 0.4
@@ -44,62 +45,24 @@ while select_new_dataset == "N":
 
     dataset = input("Opção 1 - 2  - 3: ")
 
-    n_instancias = input("Quantas instancias (Exemplos) deseja utilizar? ")
-    n_features = input("Quantos atributos (features) deseja utilizar? ")
+    n_instancias = int(input("Quantas instancias (Exemplos) deseja utilizar? "))
+    n_features = int(input("Quantos atributos (features) deseja utilizar? "))
 
     if(dataset == "1"):
-        centers = input("Quantas bolhas (centers) deseja utilizar?")
-        print(type(centers))
-        X, y = make_blobs(n_samples=int(n_instancias), centers=int(
-            centers), n_features=int(n_features))
-        if n_features == "2":
-            df = DataFrame(dict(x=X[:, 0], y=X[:, 1], label=y))
-        else:
-            df = DataFrame(dict(x=X[:, 0], y=X[:, 1], z=X[:, 2], label=y))
-        # , 2:'green', 3:'orange', 4:'pink'}
-        colors = {0: 'red', 1: 'blue', 2: 'orange'}
-        fig, ax = pyplot.subplots()
-        grouped = df.groupby('label')
-        for key, group in grouped:
-            group.plot(ax=ax, kind='scatter', x='x',
-                        y='y', label=key, color=colors[key])
-        print(X)
-        print(y)
-        print(df.head)
-        pyplot.show()
-
+        centers = int(input("Quantas bolhas (centers) deseja utilizar?"))
+        df = generate.blobs(n_instancias, centers, n_features)
     if (dataset == "2"):
         noise = input("Quanto de ruido deseja utilizar? entre 0 e 1")
-        X, y = make_moons(n_samples=int(n_instancias), noise=float(noise))
-        # scatter plot, dots colored by class value
-        df = DataFrame(dict(x=X[:, 0], y=X[:, 1], label=y))
-        colors = {0: 'red', 1: 'blue'}
-        fig, ax = pyplot.subplots()
-        grouped = df.groupby('label')
-        for key, group in grouped:
-            group.plot(ax=ax, kind='scatter', x='x',
-                        y='y', label=key, color=colors[key])
-        print(X)
-        print(y)
-        pyplot.show()
-
+        df = generate.moons(n_instancias, noise)
     if (dataset == "3"):
-        #noise = input("Quanto de ruido deseja utilizar? entre 0 e 1")
-        X, y = make_circles(n_samples=int(
-            n_instancias), noise=float(noise))
-        # scatter plot, dots colored by class value
-        df = DataFrame(dict(x=X[:, 0], y=X[:, 1], label=y))
-        colors = {0: 'red', 1: 'blue'}
-        fig, ax = pyplot.subplots()
-        grouped = df.groupby('label')
+        # noise = input("Quanto de ruido deseja utilizar? entre 0 e 1")
+        df = generate.circles(n_instancias, noise)
+    if (dataset == "4"):
+        df = generate.classification(n_instancias, n_features)
 
-        for key, group in grouped:
-            group.plot(ax=ax, kind='scatter', x='x',
-                        y='y', label=key, color=colors[key])
-        print(X)
-        print(y)
-        pyplot.show()
-    
+    print(df.head)
+    ax1 = df.plot.scatter(x=0, y=1, c='Blue')
+    pyplot.show()
     select_new_dataset = 'N' if input("Esse é o dataset que deseja utilizar? (y/N)") != 'y' else 'y'
 
 filename = "NGEN=" + str(NGEN)
@@ -336,11 +299,5 @@ if __name__ == '__main__':
 
     df['label'] = results[0][0]
     df.to_csv(str(filename)+".csv")
-    fig, ax = pyplot.subplots()
-    grouped = df.groupby('label')
-    for key, group in grouped:
-        group.plot(ax=ax, kind='scatter', x='x',
-                   y='y', label=key, color=colors[key])
-    print(X)
-    print(y)
+    ax1 = df.plot.scatter(x=0, y=1, c='label', colormap='Paired')
     pyplot.show()
