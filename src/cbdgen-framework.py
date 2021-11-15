@@ -23,7 +23,7 @@ bobj = 0.4
 P = [12]
 SCALES = [1]
 tread = ""
-ok = "0"
+select_new_dataset = "N"
 NGEN = 1000
 CXPB = 0.7
 MUTPB = 0.2
@@ -36,7 +36,7 @@ centers = 1
 metricas = ""
 noise = 0.3
 
-while ok == "0":
+while select_new_dataset == "N":
     print("Escolha que tipo de base deseja gerar:")
     print("Escolha 1 - Para bolhas de pontos com uma distribuição gaussiana.")
     print("Escolha 2 - Para gerar um padrão de redemoinho, ou duas luas.")
@@ -67,9 +67,6 @@ while ok == "0":
         print(y)
         print(df.head)
         pyplot.show()
-        ok = input(
-            "Esse é o dataset que deseja utilizar? 1 - sim / 0 - não ")
-        ok = "1"
 
     if (dataset == "2"):
         noise = input("Quanto de ruido deseja utilizar? entre 0 e 1")
@@ -85,9 +82,6 @@ while ok == "0":
         print(X)
         print(y)
         pyplot.show()
-        ok = input(
-            "Esse é o dataset que deseja utilizar? 1 - sim / 0 - não ")
-        ok = "1"
 
     if (dataset == "3"):
         #noise = input("Quanto de ruido deseja utilizar? entre 0 e 1")
@@ -105,9 +99,8 @@ while ok == "0":
         print(X)
         print(y)
         pyplot.show()
-        ok = input(
-            "Esse é o dataset que deseja utilizar? 1 - sim / 0 - não ")
-        ok = "1"
+    
+    select_new_dataset = 'N' if input("Esse é o dataset que deseja utilizar? (y/N)") != 'y' else 'y'
 
 filename = "NGEN=" + str(NGEN)
 
