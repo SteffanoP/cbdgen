@@ -4,10 +4,8 @@ import random
 import matplotlib.pyplot as plt
 import multiprocessing
 import pickle
-from sklearn.datasets import make_blobs, make_moons, make_circles
 from sklearn.datasets import load_iris
 from matplotlib import pyplot
-from pandas import DataFrame
 
 from deap import base
 from deap import creator
