@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Thiago R."
+  given-names: "França"
+  affiliation: "Universidade Federal Rural de Pernambuco"
+- family-names: "Steffano X."
+  given-names: "Pereira"
+  affiliation: "Universidade Federal Rural de Pernambuco"
+title: "Many-Objective Optimizer Approach for Complexity-based Data set Generation"
+version: 0.1.0
+date-released: 2021-06-18
+url: "https://github.com/SteffanoP/cbdgen-framework"
+preferred-citation:
+  type: conference-paper
+  title: "A Many-Objective optimization Approach for Complexity-based Data set Generation"
+  doi: "10.1109/CEC48606.2020.9185543"
+  year: 2020
+  month: 7
+  start: 1 # First page number
+  end: 8 # Last page number
+  collection-title: "2020 IEEE Congress on Evolutionary Computation (CEC)"
+  authors:
+  - family-names: "França"
+    given-names: "Thiago R."
+    affiliation: "Universidade Federal Rural de Pernambuco"
+  - family-names: "Miranda"
+    given-names: "Péricles B. C."
+    affiliation: "Universidade Federal Rural de Pernambuco"
+  - family-names: "Prudêncio"
+    given-names: "Ricardo B. C."
+    affiliation: "Universidade Federal de Pernambuco"
+  - family-names: "Lorena"
+    given-names: "Ana C."
+    affiliation: "Instituto Tecnológico de Aeronáutica"
+  - family-names: "Nascimento"
+    given-names: "André C. A."
+    affiliation: "Universidade Federal Rural de Pernambuco"
