@@ -59,6 +59,9 @@ while select_new_dataset == "N":
         df = generate.circles(n_instancias, noise)
     if (dataset == "4"):
         df = generate.classification(n_instancias, n_features, n_classes)
+    if (dataset == "5"):
+        n_labels = int(input("Quantas labels você deseja classificar?"))
+        df = generate.multilabel_classification(n_instancias, n_features, n_classes, n_labels)
 
     print(df.head)
     ax1 = df.plot.scatter(x=0, y=1, c='Blue')
