@@ -66,3 +66,21 @@ Python possuí um gerenciador de pacotes embutido, conhecido como `pip`, vamos u
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
+
+## Citação
+
+Para citar o `cbdgen-framework` em suas publicações utilize:
+
+```BibTeX
+@inproceedings{Franca_A_Many-Objective_optimization_2020,
+author = {França, Thiago R. and Miranda, Péricles B. C. and Prudêncio, Ricardo B. C. and Lorena, Ana C. and Nascimento, André C. A.},
+booktitle = {2020 IEEE Congress on Evolutionary Computation (CEC)},
+doi = {10.1109/CEC48606.2020.9185543},
+month = {7},
+pages = {1--8},
+title = {{A Many-Objective optimization Approach for Complexity-based Data set Generation}},
+year = {2020}
+}
+```
+
+Para mais detalhes veja a [CITATION.cff](CITATION.cff).
