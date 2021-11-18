@@ -8,17 +8,17 @@ pandas2ri.activate()
 
 def feature(df, label, measure):
     r_df, fml = __conversion_formula(df, label)
-    f1Vector = ecol.overlapping_formula(
-        fml, r_df, measures=measure, summary="return")
-    f1 = f1Vector.rx(1)
-    return float(f1[0][0])
+    fVector = ecol.overlapping_formula(
+        fml, r_df, measures=measure)
+    f = fVector.rx(1)
+    return float(f[0][0])
     
 def neighborhood(df, label, measure):
     r_df, fml = __conversion_formula(df, label)
-    n2Vector = ecol.neighborhood_formula(
-        fml, r_df, measures=measure, summary="return")
-    n2 = n2Vector.rx(1)
-    return float(n2[0][0])
+    nVector = ecol.neighborhood_formula(
+        fml, r_df, measures=measure)
+    n = nVector.rx(1)
+    return float(n[0][0])
 
 def linearity(df, label, measure):
     r_df, fml = __conversion_formula(df, label)
