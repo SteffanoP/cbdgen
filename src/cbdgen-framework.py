@@ -31,6 +31,7 @@ POP = 100
 
 n_instancias = 100
 n_features = 3
+n_classes = 1
 centers = 1
 metricas = ""
 noise = 0.3
@@ -45,6 +46,7 @@ while select_new_dataset == "N":
 
     n_instancias = int(input("Quantas instancias (Exemplos) deseja utilizar? "))
     n_features = int(input("Quantos atributos (features) deseja utilizar? "))
+    n_classes = int(input("Quantas classes você deseja?"))
 
     if(dataset == "1"):
         centers = int(input("Quantas bolhas (centers) deseja utilizar?"))
@@ -56,7 +58,7 @@ while select_new_dataset == "N":
         # noise = input("Quanto de ruido deseja utilizar? entre 0 e 1")
         df = generate.circles(n_instancias, noise)
     if (dataset == "4"):
-        df = generate.classification(n_instancias, n_features)
+        df = generate.classification(n_instancias, n_features, n_classes)
 
     print(df.head)
     ax1 = df.plot.scatter(x=0, y=1, c='Blue')
@@ -223,7 +225,7 @@ creator.create("FitnessMin", base.Fitness, weights=(-1.0,)*NOBJ)
 creator.create("Individual", list, fitness=creator.FitnessMin)
 
 RANDINT_LOW = 0
-RANDINT_UP = 1
+RANDINT_UP = n_classes - 1
 
 toolbox = base.Toolbox()
 toolbox.register("attr_int", random.randint, RANDINT_LOW, RANDINT_UP)

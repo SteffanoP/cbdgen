@@ -19,10 +19,11 @@ def circles(samples, noise):
     X, y = make_circles(n_samples=samples, noise=noise)
     return _create_pd_dataframe(X, y)
 
-def classification(samples, features):
+def classification(samples, features, classes):
     X, y = make_classification(
         n_samples=samples, 
         n_features=features, 
+        n_classes=classes,
         n_redundant=0, 
         n_informative=2, 
         n_clusters_per_class=1
