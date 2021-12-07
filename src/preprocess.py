@@ -1,6 +1,11 @@
 from pandas.core.frame import DataFrame
 from sklearn.preprocessing import MinMaxScaler
 
+# Refactoring
+def copyColumnsNamesFrom(df: DataFrame, label_name: str):
+    return df.drop(columns=label_name).columns.copy()
+
+# Scaling
 def scaleTo(min, max, data):
     scaler = MinMaxScaler(feature_range=(min, max))
     return scaler.fit_transform(data)

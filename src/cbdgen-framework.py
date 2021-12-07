@@ -92,6 +92,9 @@ if (escolha == 'y'):
     base_df = pd.DataFrame(data=np.c_[base_dataset['data'], base_dataset['target']], columns=base_dataset['feature_names'] + ['target'])
     target = "target"
 
+    # Copying Columns names
+    df.columns = preprocess.copyColumnsNamesFrom(base_df, label_name=target)
+
     # Scaling to original Dataset
     df = preprocess.scaleColumnsFrom(base_df, df)
 
