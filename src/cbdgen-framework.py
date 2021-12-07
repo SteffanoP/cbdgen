@@ -124,19 +124,19 @@ else:
         filename += "-L2"
     if ("3" in metricasList):
         objetivo = input(
-            "Escolha os valores que deseja alcançar para: Neighborhood N2")
+            "Escolha os valores que deseja alcançar para: Neighborhood N1")
         globalN1 = float(objetivo)
         filename += "-N1"
     if ("4" in metricasList):
         print("WARNING: N2 is a experimental measure, you may not be able to get efficient results")
         objetivo = input(
-            "Escolha os valores que deseja alcançar para: Network ClsCoef")
+            "Escolha os valores que deseja alcançar para: Neighborhood N2")
         globalN2 = float(objetivo)
         filename += "-N2"
     if ("5" in metricasList):
         print("WARNING: T1 is a experimental measure, you may not be able to get efficient results")
         objetivo = input(
-            "Escolha os valores que deseja alcançar para: Dimensionality T2")
+            "Escolha os valores que deseja alcançar para: Neighborhood T1")
         globalT1 = float(objetivo)
         filename += "-T1"
     if ("6" in metricasList):
