@@ -76,10 +76,10 @@ escolha = input()
 print("Escolha quais métricas deseja otimizar (separe com espaço)")
 print("Class imbalance C2 = 1")
 print("Linearity L2 = 2")
-print("Neighborhood N2 = 3")
-print("Network ClsCoef = 4")
-print("Dimensionality T2 = 5")
-print("Feature-based F1 = 6")
+print("Neighborhood N1 = 3")
+print("Neighborhood N2 (Experimental) = 4")
+print("Neighborhood T1 (Experimental) = 5")
+print("Feature-based F2 = 6")
 
 metricas = input("Métrica: ")
 
@@ -98,19 +98,19 @@ if (escolha == 'y'):
         print(globalLinear)
         filename += "-L2"
     if ("3" in metricasList):
+        globalN1 = complx.neighborhood(base_df, target, "N1")
+        filename += "-N1"
+    if ("4" in metricasList):
         globalN2 = complx.neighborhood(base_df, target, "N2")
         filename += "-N2"
-    if ("4" in metricasList):
-        globalClsCoef = complx.network(base_df, target, "ClsCoef")
-        print(globalClsCoef)
-        filename += "-CLSCOEF"
+        print("WARNING: N2 is a experimental measure, you may not be able to get efficient results")
     if ("5" in metricasList):
-        globalt2 = complx.dimensionality(base_df, target, "T2")
-        print(globalt2)
-        filename += "-T2"
+        globalT1 = complx.neighborhood(base_df, target, "T1")
+        filename += "-T1"
+        print("WARNING: T1 is a experimental measure, you may not be able to get efficient results")
     if ("6" in metricasList):
-        globalf1 = complx.feature(base_df, target, "F1")
-        filename += "-F1"
+        globalF2 = complx.feature(base_df, target, "F2")
+        filename += "-F2"
 else:
     if ("1" in metricasList):
         objetivo = input(
@@ -124,24 +124,26 @@ else:
         filename += "-L2"
     if ("3" in metricasList):
         objetivo = input(
+            "Escolha os valores que deseja alcançar para: Neighborhood N1")
+        globalN1 = float(objetivo)
+        filename += "-N1"
+    if ("4" in metricasList):
+        print("WARNING: N2 is a experimental measure, you may not be able to get efficient results")
+        objetivo = input(
             "Escolha os valores que deseja alcançar para: Neighborhood N2")
         globalN2 = float(objetivo)
         filename += "-N2"
-    if ("4" in metricasList):
-        objetivo = input(
-            "Escolha os valores que deseja alcançar para: Network ClsCoef")
-        globalClsCoef = float(objetivo)
-        filename += "-CLSCOEF"
     if ("5" in metricasList):
+        print("WARNING: T1 is a experimental measure, you may not be able to get efficient results")
         objetivo = input(
-            "Escolha os valores que deseja alcançar para: Dimensionality T2")
-        globalt2 = float(objetivo)
-        filename += "-T2"
+            "Escolha os valores que deseja alcançar para: Neighborhood T1")
+        globalT1 = float(objetivo)
+        filename += "-T1"
     if ("6" in metricasList):
         objetivo = input(
             "Escolha os valores que deseja alcançar para: Feature-based F1")
-        globalf1 = float(objetivo)
-        filename += "-F1"
+        globalF2 = float(objetivo)
+        filename += "-F2"
 
 N_ATTRIBUTES = int(n_instancias)
 NOBJ = len(metricasList)
@@ -168,17 +170,17 @@ def my_evaluate(individual):
         linearity = complx.linearity(dataFrame, target, "L2")
         vetor.append(abs(globalLinear - linearity))
     if ("3" in metricasList):
+        n1 = complx.neighborhood(dataFrame, target, "N1")
+        vetor.append(abs(globalN1 - n1))
+    if ("4" in metricasList):
         n2 = complx.neighborhood(dataFrame, target, "N2")
         vetor.append(abs(globalN2 - n2))
-    if ("4" in metricasList):
-        ClsCoef = complx.network(dataFrame, target, "ClsCoef")
-        vetor.append(abs(globalClsCoef - ClsCoef))
     if ("5" in metricasList):
-        t2 = complx.dimensionality(dataFrame, target, "T2")
-        vetor.append(abs(globalt2 - t2))
+        t1 = complx.neighborhood(dataFrame, target, "T1")
+        vetor.append(abs(globalT1 - t1))
     if ("6" in metricasList):
-        f1 = complx.feature(dataFrame, target, "F1")
-        vetor.append(abs(globalf1 - f1))
+        f2 = complx.feature(dataFrame, target, "F2")
+        vetor.append(abs(globalF2 - f2))
     ## --
     if(len(vetor) == 1):
         return vetor[0],
@@ -202,17 +204,17 @@ def print_evaluate(individual):
         linearity = complx.linearity(dataFrame, target, "L2")
         vetor.append(abs(linearity))
     if ("3" in metricasList):
+        n1 = complx.neighborhood(dataFrame, target, "N1")
+        vetor.append(abs(n1))
+    if ("4" in metricasList):
         n2 = complx.neighborhood(dataFrame, target, "N2")
         vetor.append(abs(n2))
-    if ("4" in metricasList):
-        ClsCoef = complx.network(dataFrame, target, "ClsCoef")
-        vetor.append(abs(ClsCoef))
     if ("5" in metricasList):
-        t2 = complx.dimensionality(dataFrame, target, "T2")
-        vetor.append(abs(t2))
+        t1 = complx.neighborhood(dataFrame, target, "T1")
+        vetor.append(abs(t1))
     if ("6" in metricasList):
-        f1 = complx.feature(dataFrame, target, "F1")
-        vetor.append(abs(f1))
+        f2 = complx.feature(dataFrame, target, "F2")
+        vetor.append(abs(f2))
     ## --
     if(len(vetor) == 1):
         return vetor[0],
