@@ -77,8 +77,8 @@ print("Escolha quais métricas deseja otimizar (separe com espaço)")
 print("Class imbalance C2 = 1")
 print("Linearity L2 = 2")
 print("Neighborhood N1 = 3")
-print("Neighborhood N2 = 4")
-print("Neighborhood T1 = 5")
+print("Neighborhood N2 (Experimental) = 4")
+print("Neighborhood T1 (Experimental) = 5")
 print("Feature-based F2 = 6")
 
 metricas = input("Métrica: ")
@@ -103,9 +103,11 @@ if (escolha == 'y'):
     if ("4" in metricasList):
         globalN2 = complx.neighborhood(base_df, target, "N2")
         filename += "-N2"
+        print("WARNING: N2 is a experimental measure, you may not be able to get efficient results")
     if ("5" in metricasList):
         globalT1 = complx.neighborhood(base_df, target, "T1")
         filename += "-T1"
+        print("WARNING: T1 is a experimental measure, you may not be able to get efficient results")
     if ("6" in metricasList):
         globalF2 = complx.feature(base_df, target, "F2")
         filename += "-F2"
@@ -126,11 +128,13 @@ else:
         globalN1 = float(objetivo)
         filename += "-N1"
     if ("4" in metricasList):
+        print("WARNING: N2 is a experimental measure, you may not be able to get efficient results")
         objetivo = input(
             "Escolha os valores que deseja alcançar para: Network ClsCoef")
         globalN2 = float(objetivo)
         filename += "-N2"
     if ("5" in metricasList):
+        print("WARNING: T1 is a experimental measure, you may not be able to get efficient results")
         objetivo = input(
             "Escolha os valores que deseja alcançar para: Dimensionality T2")
         globalT1 = float(objetivo)
