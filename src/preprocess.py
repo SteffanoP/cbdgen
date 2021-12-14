@@ -2,7 +2,7 @@ from pandas.core.frame import DataFrame
 from sklearn.preprocessing import MinMaxScaler
 
 # Refactoring
-def copyColumnsNamesFrom(df: DataFrame, label_name: str):
+def copyFeatureNamesFrom(df: DataFrame, label_name: str):
     return df.drop(columns=label_name).columns.copy()
 
 # Scaling
