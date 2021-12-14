@@ -93,10 +93,7 @@ if (escolha == 'y'):
     target = "target"
 
     # Copying Columns names
-    df.columns = preprocess.copyColumnsNamesFrom(base_df, label_name=target)
-
-    # Scaling to original Dataset
-    df = preprocess.scaleColumnsFrom(base_df, df)
+    df.columns = preprocess.copyFeatureNamesFrom(base_df, label_name=target)
 
     if ("1" in metricasList):
         globalBalance = complx.balance(base_df, target, "C2")
@@ -311,6 +308,8 @@ if __name__ == '__main__':
         outfile.close()
 
     df['label'] = results[0][0]
+    # Scale to original Dataset (Optional)
+    df = preprocess.scaleColumnsFrom(base_df, df, label_column='label')
     df.to_csv(str(filename)+".csv")
     ax1 = df.plot.scatter(x=0, y=1, c='label', colormap='Paired')
     pyplot.show()
