@@ -17,6 +17,7 @@ import rpy2.robjects as robjects
 import complexity as complx
 import generate
 import preprocess
+import setup.setup_framework as setup
 
 cont = 0
 bobj = 0.4
@@ -37,66 +38,52 @@ centers = 1
 metricas = ""
 noise = 0.3
 
-while select_new_dataset == "N":
-    print("Escolha que tipo de base deseja gerar:")
-    print("Escolha 1 - Para bolhas de pontos com uma distribuição gaussiana.")
-    print("Escolha 2 - Para gerar um padrão de redemoinho, ou duas luas.")
-    print("Escolha 3 - Para gerar um problema de classificação com conjuntos de dados em círculos concêntricos.")
+# TODO: Improve how args should be returned to the main program or if it
+# should really return to the main.
+NGEN, distribution, n_instancias, n_features, n_classes, filename = setup.get_args()
 
-    dataset = input("Opção 1 - 2  - 3: ")
+# TODO: Refactor how the dataset should be generated, maybe implement as
+# a module.
+if distribution == '1': df = generate.blobs(n_instancias, 0, n_features)
+if distribution == '2': df = generate.moons(n_instancias, None)
+if distribution == '3': df = generate.circles(n_instancias, None)
+if distribution == '4':
+    df = generate.classification(n_instancias,
+                                 n_features, n_classes)
+if distribution == '5':
+    df = generate.multilabel_classification(
+        samples=n_instancias,
+        features=n_features,
+        classes=n_classes,
+        labels=None
+    )
 
-    n_instancias = int(input("Quantas instancias (Exemplos) deseja utilizar? "))
-    n_features = int(input("Quantos atributos (features) deseja utilizar? "))
-    n_classes = int(input("Quantas classes você deseja?"))
+df = df.drop('label', axis=1)
 
-    if(dataset == "1"):
-        centers = int(input("Quantas bolhas (centers) deseja utilizar?"))
-        df = generate.blobs(n_instancias, centers, n_features)
-    if (dataset == "2"):
-        noise = input("Quanto de ruido deseja utilizar? entre 0 e 1")
-        df = generate.moons(n_instancias, noise)
-    if (dataset == "3"):
-        # noise = input("Quanto de ruido deseja utilizar? entre 0 e 1")
-        df = generate.circles(n_instancias, noise)
-    if (dataset == "4"):
-        df = generate.classification(n_instancias, n_features, n_classes)
-    if (dataset == "5"):
-        n_labels = int(input("Quantas labels você deseja classificar?"))
-        df = generate.multilabel_classification(n_instancias, n_features, n_classes, n_labels)
+# TODO: Refactor to a global pattern that every dataset generated has a
+# unique filename.
+filename += "-NGEN=" + str(NGEN)
 
-    df = df.drop('label', axis=1)
-    print(df.head)
-    ax1 = df.plot.scatter(x=0, y=1, c='Blue')
-    pyplot.show()
-    select_new_dataset = 'N' if input("Esse é o dataset que deseja utilizar? (y/N)") != 'y' else 'y'
+escolha = 'y'
 
-filename = "NGEN=" + str(NGEN)
-
-print("Você deseja basear as métricas a um dataset já existente? (y/N)")
-escolha = input()
-
-print("Escolha quais métricas deseja otimizar (separe com espaço)")
-print("Class imbalance C2 = 1")
-print("Linearity L2 = 2")
-print("Neighborhood N1 = 3")
-print("Neighborhood N2 (Experimental) = 4")
-print("Neighborhood T1 (Experimental) = 5")
-print("Feature-based F2 = 6")
-
-metricas = input("Métrica: ")
+# TODO: Set how the metrics will work, should it be passed by an argparser or
+# a config file?
+metricas = "1 2 3 6"
 
 metricasList = metricas.split()
 
 if (escolha == 'y'):
     base_dataset = load_iris()
-    base_df = pd.DataFrame(data=np.c_[base_dataset['data'], base_dataset['target']], columns=base_dataset['feature_names'] + ['target'])
-    target = "target"
+    # TODO: See #6
+    base_df = pd.read_table('seeds_dataset.csv', sep=',')
+    target = "wheat"
 
     # Copying Columns names
     df.columns = preprocess.copyFeatureNamesFrom(base_df, label_name=target)
 
     if ("1" in metricasList):
         globalBalance = complx.balance(base_df, target, "C2")
+        print(globalBalance)
         filename += "-C2"
     if ("2" in metricasList):
         globalLinear = complx.linearity(base_df, target, "L2")
@@ -104,6 +91,7 @@ if (escolha == 'y'):
         filename += "-L2"
     if ("3" in metricasList):
         globalN1 = complx.neighborhood(base_df, target, "N1")
+        print(globalN1)
         filename += "-N1"
     if ("4" in metricasList):
         globalN2 = complx.neighborhood(base_df, target, "N2")
@@ -115,6 +103,7 @@ if (escolha == 'y'):
         print("WARNING: T1 is a experimental measure, you may not be able to get efficient results")
     if ("6" in metricasList):
         globalF2 = complx.feature(base_df, target, "F2")
+        print(globalF2)
         filename += "-F2"
 else:
     if ("1" in metricasList):
@@ -309,7 +298,5 @@ if __name__ == '__main__':
 
     df['label'] = results[0][0]
     # Scale to original Dataset (Optional)
-    df = preprocess.scaleColumnsFrom(base_df, df, label_column='label')
+    #df = preprocess.scaleColumnsFrom(base_df, df, label_column='label')
     df.to_csv(str(filename)+".csv")
-    ax1 = df.plot.scatter(x=0, y=1, c='label', colormap='Paired')
-    pyplot.show()
