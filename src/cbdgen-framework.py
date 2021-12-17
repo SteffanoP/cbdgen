@@ -16,6 +16,7 @@ import rpy2.robjects as robjects
 
 import complexity as complx
 import generate
+import preprocess
 
 cont = 0
 bobj = 0.4
@@ -63,6 +64,7 @@ while select_new_dataset == "N":
         n_labels = int(input("Quantas labels você deseja classificar?"))
         df = generate.multilabel_classification(n_instancias, n_features, n_classes, n_labels)
 
+    df = df.drop('label', axis=1)
     print(df.head)
     ax1 = df.plot.scatter(x=0, y=1, c='Blue')
     pyplot.show()
@@ -89,6 +91,9 @@ if (escolha == 'y'):
     base_dataset = load_iris()
     base_df = pd.DataFrame(data=np.c_[base_dataset['data'], base_dataset['target']], columns=base_dataset['feature_names'] + ['target'])
     target = "target"
+
+    # Copying Columns names
+    df.columns = preprocess.copyFeatureNamesFrom(base_df, label_name=target)
 
     if ("1" in metricasList):
         globalBalance = complx.balance(base_df, target, "C2")
@@ -303,6 +308,8 @@ if __name__ == '__main__':
         outfile.close()
 
     df['label'] = results[0][0]
+    # Scale to original Dataset (Optional)
+    df = preprocess.scaleColumnsFrom(base_df, df, label_column='label')
     df.to_csv(str(filename)+".csv")
     ax1 = df.plot.scatter(x=0, y=1, c='label', colormap='Paired')
     pyplot.show()
