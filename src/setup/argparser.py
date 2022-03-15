@@ -1,6 +1,6 @@
 import argparse
 
-from complexity_types.cm import cm
+from setup.complexity_types.cm import cm
 
 def parse_args() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -66,3 +66,7 @@ def parse_args() -> argparse.ArgumentParser:
                         )
 
     return parser.parse_args()
+
+args = parse_args()
+
+print(args)

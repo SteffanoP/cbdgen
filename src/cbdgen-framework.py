@@ -14,6 +14,7 @@ from deap import algorithms
 
 import rpy2.robjects as robjects
 
+import setup.setup_framework as setup
 import complexity as complx
 import generate
 import preprocess
