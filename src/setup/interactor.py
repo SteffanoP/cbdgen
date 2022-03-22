@@ -1,3 +1,5 @@
+from setup.complexity_types.cm import cm
+
 def terminal_input() -> dict:
     inpt = {}
     inpt['maker'] = maker_type_input()
@@ -6,6 +8,15 @@ def terminal_input() -> dict:
     inpt['classes'] = classes_input()
     inpt['filename'] = filename_input()
 
+    # Reading and Separating Measures
+    measures = measures_input()
+    if measures != None:
+        inpt['measures'] = []
+        for measure in measures:
+            inpt['measures'].append(measure[0])
+            inpt[measure[0]] = measure[1]
+
+    return inpt
 
 def maker_type_input() -> int:
     print("Escolha que tipo de base deseja gerar:")
@@ -49,6 +60,22 @@ def filename_input() -> int:
     return __input_with_default__(
         "Como deseja nomear o arquivo do dataset gerado?\n", "", data_type=str)
 
+def measures_input() -> list:
+    print("Escolha quais métricas e valores que deseja otimizar")
+    print("Class imbalance C2")
+    print("Linearity L2")
+    print("Neighborhood N1")
+    print("Neighborhood N2 (Experimental)")
+    print("Neighborhood T1 (Experimental)")
+    print("Feature-based F2")
+    print("Ao digitar, obedeça o seguinte padrão:")
+    print("<Medida de Complexidade>:<Valor de Complexidade Desejado [0,1]>")
+    print("Por Exemplo: N1:0.5 L2:0.4 C2:0.35 F2:0.80\n")
+
+    input_Stream = input().split()
+    
+    # Appends every Complexity Measure in measures list
+    return [cm(measure) for measure in input_Stream]
 
 def __input_with_default__(input_text: str, default_value, data_type):
     try:
