@@ -1,10 +1,11 @@
-def interact():
-    maker = maker_type_input()
-    samples = samples_input()
-    attributes = attributes_input()
-    classes = classes_input()
+def terminal_input() -> dict:
+    inpt = {}
+    inpt['maker'] = maker_type_input()
+    inpt['samples'] = samples_input()
+    inpt['attributes'] = attributes_input()
+    inpt['classes'] = classes_input()
+    inpt['filename'] = filename_input()
 
-    filename = filename_input()
 
 def maker_type_input() -> int:
     print("Escolha que tipo de base deseja gerar:")
@@ -51,7 +52,6 @@ def filename_input() -> int:
 
 def __input_with_default__(input_text: str, default_value, data_type):
     try:
-        data_type(input(input_text))
     except ValueError:
         print(f"Invalid Value, using default: {default_value}")
         return default_value
