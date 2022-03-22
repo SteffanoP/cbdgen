@@ -66,7 +66,3 @@ def parse_args() -> argparse.ArgumentParser:
                         )
 
     return parser.parse_args()
-
-args = parse_args()
-
-print(args)
