@@ -52,6 +52,7 @@ def filename_input() -> int:
 
 def __input_with_default__(input_text: str, default_value, data_type):
     try:
+        return data_type(input(input_text))
     except ValueError:
         print(f"Invalid Value, using default: {default_value}")
         return default_value
