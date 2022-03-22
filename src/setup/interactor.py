@@ -1,4 +1,4 @@
-from setup.complexity_types.cm import cm
+from setup.options_types.cm import cm
 
 def terminal_input() -> dict:
     inpt = {}

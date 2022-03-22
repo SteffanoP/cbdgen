@@ -1,6 +1,6 @@
 import argparse
 
-from setup.complexity_types.cm import cm
+from setup.options_types.cm import cm
 
 def parse_args() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
