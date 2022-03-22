@@ -12,6 +12,14 @@ def parse_args() -> argparse.ArgumentParser:
                         "interative mode.",
                         action='store_true'
                         )
+    parser.add_argument('--attributes',
+                        dest='number_of_attributes',
+                        help="number of attributes to be generated"
+                        "(default: %(default)d "
+                        "attributes).",
+                        type=int,
+                        default=2
+                        )
     parser.add_argument('--classes',
                         dest='number_of_classes',
                         help="number of classes to be targeted"
@@ -27,14 +35,6 @@ def parse_args() -> argparse.ArgumentParser:
     #                     type=str,
     #                     default='classf'
     #                     )
-    parser.add_argument('--features',
-                        dest='number_of_features',
-                        help="number of features to be generated"
-                        "(default: %(default)d "
-                        "features).",
-                        type=int,
-                        default=2
-                        )
     parser.add_argument('--filename',
                         dest='filename',
                         help="prefix of the filename generated." 

@@ -13,7 +13,7 @@ def setup_interative() -> dict:
 def setup_non_interative(args) -> dict:
     options = {}
     options['classes'] = args.number_of_classes
-    options['features'] = args.number_of_features
+    options['attributes'] = args.number_of_attributes
     options['samples'] = args.number_of_instances
     options['NGEN'] = args.number_of_generations
     options['filename'] = args.filename
