@@ -27,6 +27,12 @@ def parse_args() -> argparse.ArgumentParser:
                         type=int,
                         default=2
                         )
+    parser.add_argument('--cm', 
+                        dest='cm',
+                        help="List of Complexity Measures to be optimized",
+                        type=cm, 
+                        nargs='+'
+                        )
     # parser.add_argument('--distribution', # Distribution is not the right name
     #                     dest="distribution",
     #                     help="distribution to generate a random dataset.",
@@ -57,12 +63,6 @@ def parse_args() -> argparse.ArgumentParser:
                         "(default: %(default)d generations).",
                         type=int,
                         default=1000
-                        )
-    parser.add_argument('--cm', 
-                        dest='cm',
-                        help="List of Complexity Measures to be optimized",
-                        type=cm, 
-                        nargs='+'
                         )
 
     return parser.parse_args()
