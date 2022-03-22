@@ -17,7 +17,7 @@ def setup_non_interative(args) -> dict:
     options['samples'] = args.number_of_instances
     options['NGEN'] = args.number_of_generations
     options['filename'] = args.filename
-
+    options['maker'] = args.maker
     # Separating Measures
     if args.cm != None:
         options['measures'] = []

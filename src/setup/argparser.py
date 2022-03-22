@@ -1,6 +1,7 @@
 import argparse
 
 from setup.options_types.cm import cm
+from setup.options_types.maker import maker
 
 def parse_args() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -33,14 +34,6 @@ def parse_args() -> argparse.ArgumentParser:
                         type=cm, 
                         nargs='+'
                         )
-    # parser.add_argument('--distribution', # Distribution is not the right name
-    #                     dest="distribution",
-    #                     help="distribution to generate a random dataset.",
-    #                     choices=['blobs', 'moons', 'circles',
-    #                              'classf', 'multi_classf'],
-    #                     type=str,
-    #                     default='classf'
-    #                     )
     parser.add_argument('--filename',
                         dest='filename',
                         help="prefix of the filename generated." 
@@ -55,6 +48,12 @@ def parse_args() -> argparse.ArgumentParser:
                         "instances).",
                         type=int,
                         default=100
+                        )
+    parser.add_argument('--maker',
+                        dest="maker",
+                        help="The maker to generate a random dataset.",
+                        type=maker,
+                        default='classf'
                         )
     parser.add_argument('--ngen',
                         dest="number_of_generations",
