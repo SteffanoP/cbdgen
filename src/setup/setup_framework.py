@@ -1,4 +1,5 @@
 import setup.argparser as argparser
+import setup.terminal_interaction as interaction
 
 def get_options() -> dict:
     args = argparser.parse_args()
@@ -7,7 +8,7 @@ def get_options() -> dict:
     return setup_non_interative(args)
 
 def setup_interative() -> dict:
-    return None
+    return interaction.interact()
 
 def setup_non_interative(args) -> dict:
     options = {}
