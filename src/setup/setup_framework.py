@@ -20,7 +20,9 @@ def setup_non_interative(args) -> dict:
 
     # Separating Measures
     if args.cm != None:
+        options['measures'] = []
         for measure in args.cm:
+            options['measures'].append(measure[0])
             options[measure[0]] = measure[1]
     
     return options
