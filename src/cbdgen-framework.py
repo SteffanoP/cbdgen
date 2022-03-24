@@ -14,9 +14,13 @@ from deap import algorithms
 
 import rpy2.robjects as robjects
 
+import setup.setup_framework as setup
 import complexity as complx
 import generate
 import preprocess
+
+# TODO: Implement Setup in a minimal main()
+options = setup.get_options()
 
 cont = 0
 bobj = 0.4
@@ -30,62 +34,34 @@ MUTPB = 0.2
 INDPB = 0.05
 POP = 100
 
-n_instancias = 100
-n_features = 3
-n_classes = 1
-centers = 1
-metricas = ""
-noise = 0.3
+n_instancias = options['samples']
+n_features = options['attributes']
+n_classes = options['classes']
 
-while select_new_dataset == "N":
-    print("Escolha que tipo de base deseja gerar:")
-    print("Escolha 1 - Para bolhas de pontos com uma distribuição gaussiana.")
-    print("Escolha 2 - Para gerar um padrão de redemoinho, ou duas luas.")
-    print("Escolha 3 - Para gerar um problema de classificação com conjuntos de dados em círculos concêntricos.")
+dataset = options['maker'][0]
 
-    dataset = input("Opção 1 - 2  - 3: ")
+if(dataset == 1):
+    centers = int(options['maker'][1])
+    df = generate.blobs(n_instancias, centers, n_features)
+if (dataset == 2):
+    noise = options['maker'][1]
+    df = generate.moons(n_instancias, noise)
+if (dataset == 3):
+    noise = options['maker'][1]
+    df = generate.circles(n_instancias, noise)
+if (dataset == 4):
+    df = generate.classification(n_instancias, n_features, n_classes)
+if (dataset == 5):
+    n_labels = int(options['maker'][1])
+    df = generate.multilabel_classification(n_instancias, n_features, n_classes, n_labels)
 
-    n_instancias = int(input("Quantas instancias (Exemplos) deseja utilizar? "))
-    n_features = int(input("Quantos atributos (features) deseja utilizar? "))
-    n_classes = int(input("Quantas classes você deseja?"))
-
-    if(dataset == "1"):
-        centers = int(input("Quantas bolhas (centers) deseja utilizar?"))
-        df = generate.blobs(n_instancias, centers, n_features)
-    if (dataset == "2"):
-        noise = input("Quanto de ruido deseja utilizar? entre 0 e 1")
-        df = generate.moons(n_instancias, noise)
-    if (dataset == "3"):
-        # noise = input("Quanto de ruido deseja utilizar? entre 0 e 1")
-        df = generate.circles(n_instancias, noise)
-    if (dataset == "4"):
-        df = generate.classification(n_instancias, n_features, n_classes)
-    if (dataset == "5"):
-        n_labels = int(input("Quantas labels você deseja classificar?"))
-        df = generate.multilabel_classification(n_instancias, n_features, n_classes, n_labels)
-
-    df = df.drop('label', axis=1)
-    print(df.head)
-    ax1 = df.plot.scatter(x=0, y=1, c='Blue')
-    pyplot.show()
-    select_new_dataset = 'N' if input("Esse é o dataset que deseja utilizar? (y/N)") != 'y' else 'y'
-
-filename = "NGEN=" + str(NGEN)
+filename = options['filename'] if options['filename'] != "" else "NGEN=" + \
+    str(NGEN)
 
 print("Você deseja basear as métricas a um dataset já existente? (y/N)")
 escolha = input()
 
-print("Escolha quais métricas deseja otimizar (separe com espaço)")
-print("Class imbalance C2 = 1")
-print("Linearity L2 = 2")
-print("Neighborhood N1 = 3")
-print("Neighborhood N2 (Experimental) = 4")
-print("Neighborhood T1 (Experimental) = 5")
-print("Feature-based F2 = 6")
-
-metricas = input("Métrica: ")
-
-metricasList = metricas.split()
+metricasList = options['measures']
 
 if (escolha == 'y'):
     base_dataset = load_iris()
@@ -95,62 +71,58 @@ if (escolha == 'y'):
     # Copying Columns names
     df.columns = preprocess.copyFeatureNamesFrom(base_df, label_name=target)
 
-    if ("1" in metricasList):
+    if ('C2' in metricasList):
         globalBalance = complx.balance(base_df, target, "C2")
         filename += "-C2"
-    if ("2" in metricasList):
+    if ('L2' in metricasList):
         globalLinear = complx.linearity(base_df, target, "L2")
         print(globalLinear)
         filename += "-L2"
-    if ("3" in metricasList):
+    if ('N1' in metricasList):
         globalN1 = complx.neighborhood(base_df, target, "N1")
         filename += "-N1"
-    if ("4" in metricasList):
+    if ('N2' in metricasList):
         globalN2 = complx.neighborhood(base_df, target, "N2")
         filename += "-N2"
         print("WARNING: N2 is a experimental measure, you may not be able to get efficient results")
-    if ("5" in metricasList):
+    if ('N1' in metricasList):
         globalT1 = complx.neighborhood(base_df, target, "T1")
         filename += "-T1"
         print("WARNING: T1 is a experimental measure, you may not be able to get efficient results")
-    if ("6" in metricasList):
+    if ('F2' in metricasList):
         globalF2 = complx.feature(base_df, target, "F2")
         filename += "-F2"
 else:
-    if ("1" in metricasList):
-        objetivo = input(
-            "Escolha os valores que deseja alcançar para: Class imbalance C2")
+    if ('C2' in metricasList):
+        objetivo = options['C2']
         globalBalance = float(objetivo)
         filename += "-C2"
-    if ("2" in metricasList):
-        objetivo = input(
-            "Escolha os valores que deseja alcançar para: Linearity L2")
+    if ('L2' in metricasList):
+        objetivo = options['L2']
         globalLinear = float(objetivo)
         filename += "-L2"
-    if ("3" in metricasList):
-        objetivo = input(
-            "Escolha os valores que deseja alcançar para: Neighborhood N1")
+    if ('N1' in metricasList):
+        objetivo = options['N1']
         globalN1 = float(objetivo)
         filename += "-N1"
-    if ("4" in metricasList):
+    if ('N2' in metricasList):
         print("WARNING: N2 is a experimental measure, you may not be able to get efficient results")
-        objetivo = input(
-            "Escolha os valores que deseja alcançar para: Neighborhood N2")
+        objetivo = options['N2']
         globalN2 = float(objetivo)
         filename += "-N2"
-    if ("5" in metricasList):
+    if ('T1' in metricasList):
         print("WARNING: T1 is a experimental measure, you may not be able to get efficient results")
-        objetivo = input(
-            "Escolha os valores que deseja alcançar para: Neighborhood T1")
+        objetivo = options['T1']
         globalT1 = float(objetivo)
         filename += "-T1"
-    if ("6" in metricasList):
-        objetivo = input(
-            "Escolha os valores que deseja alcançar para: Feature-based F1")
+    if ('F2' in metricasList):
+        objetivo = options['F2']
         globalF2 = float(objetivo)
         filename += "-F2"
 
 N_ATTRIBUTES = int(n_instancias)
+print(metricasList, len(metricasList))
+print(globalN1, globalLinear, globalBalance, globalF2)
 NOBJ = len(metricasList)
 
 dic = {}
@@ -168,22 +140,22 @@ def my_evaluate(individual):
     robjects.globalenv['dataFrame'] = dataFrame
     target = "label"
 
-    if("1" in metricasList):
+    if('C2' in metricasList):
         imbalance = complx.balance(dataFrame, target, "C2")
         vetor.append(abs(globalBalance - imbalance))
-    if ("2" in metricasList):
+    if ('L2' in metricasList):
         linearity = complx.linearity(dataFrame, target, "L2")
         vetor.append(abs(globalLinear - linearity))
-    if ("3" in metricasList):
+    if ('N1' in metricasList):
         n1 = complx.neighborhood(dataFrame, target, "N1")
         vetor.append(abs(globalN1 - n1))
-    if ("4" in metricasList):
+    if ('N2' in metricasList):
         n2 = complx.neighborhood(dataFrame, target, "N2")
         vetor.append(abs(globalN2 - n2))
-    if ("5" in metricasList):
+    if ('T1' in metricasList):
         t1 = complx.neighborhood(dataFrame, target, "T1")
         vetor.append(abs(globalT1 - t1))
-    if ("6" in metricasList):
+    if ('F2' in metricasList):
         f2 = complx.feature(dataFrame, target, "F2")
         vetor.append(abs(globalF2 - f2))
     ## --
@@ -202,22 +174,22 @@ def print_evaluate(individual):
     dataFrame['label'] = individual
     robjects.globalenv['dataFrame'] = dataFrame
     target = "label"
-    if("1" in metricasList):
+    if('C2' in metricasList):
         imbalance = complx.balance(dataFrame, target, "C2")
         vetor.append(abs(imbalance))
-    if ("2" in metricasList):
+    if ('L2' in metricasList):
         linearity = complx.linearity(dataFrame, target, "L2")
         vetor.append(abs(linearity))
-    if ("3" in metricasList):
+    if ('N1' in metricasList):
         n1 = complx.neighborhood(dataFrame, target, "N1")
         vetor.append(abs(n1))
-    if ("4" in metricasList):
+    if ('N2' in metricasList):
         n2 = complx.neighborhood(dataFrame, target, "N2")
         vetor.append(abs(n2))
-    if ("5" in metricasList):
+    if ('T1' in metricasList):
         t1 = complx.neighborhood(dataFrame, target, "T1")
         vetor.append(abs(t1))
-    if ("6" in metricasList):
+    if ('F2' in metricasList):
         f2 = complx.feature(dataFrame, target, "F2")
         vetor.append(abs(f2))
     ## --
@@ -308,8 +280,8 @@ if __name__ == '__main__':
         outfile.close()
 
     df['label'] = results[0][0]
-    # Scale to original Dataset (Optional)
-    df = preprocess.scaleColumnsFrom(base_df, df, label_column='label')
+    # Scale to original Dataset (Optional) #TODO: Improve preprocessing
+    # df = preprocess.scaleColumnsFrom(base_df, df, label_column='label')
     df.to_csv(str(filename)+".csv")
     ax1 = df.plot.scatter(x=0, y=1, c='label', colormap='Paired')
     pyplot.show()
