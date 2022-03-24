@@ -30,7 +30,8 @@ def parse_args() -> argparse.ArgumentParser:
                         )
     parser.add_argument('--cm', 
                         dest='cm',
-                        help="List of Complexity Measures to be optimized",
+                        help="List of Complexity Measures to be optimized"
+                            " (e.g. `N1:0.5 L2:0.4 C2:0.35 F2:0.80`)",
                         type=cm, 
                         nargs='+'
                         )
