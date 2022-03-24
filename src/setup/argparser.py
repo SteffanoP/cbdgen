@@ -53,7 +53,7 @@ def parse_args() -> argparse.ArgumentParser:
                         dest="maker",
                         help="The maker to generate a random dataset.",
                         type=maker,
-                        default='classf'
+                        default=4
                         )
     parser.add_argument('--ngen',
                         dest="number_of_generations",
