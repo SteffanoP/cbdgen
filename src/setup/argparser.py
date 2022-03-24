@@ -40,7 +40,7 @@ def parse_args() -> argparse.ArgumentParser:
                         help="prefix of the filename generated." 
                         "(default: %(default)s)",
                         type=str,
-                        default=None
+                        default=""
                         )
     parser.add_argument('--instances',
                         dest="number_of_instances",
