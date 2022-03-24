@@ -41,7 +41,7 @@ n_classes = options['classes']
 dataset = options['maker'][0]
 
 if(dataset == 1):
-    centers = options['maker'][1]
+    centers = int(options['maker'][1])
     df = generate.blobs(n_instancias, centers, n_features)
 if (dataset == 2):
     noise = options['maker'][1]
@@ -52,7 +52,7 @@ if (dataset == 3):
 if (dataset == 4):
     df = generate.classification(n_instancias, n_features, n_classes)
 if (dataset == 5):
-    n_labels = options['maker'][1]
+    n_labels = int(options['maker'][1])
     df = generate.multilabel_classification(n_instancias, n_features, n_classes, n_labels)
 
 filename = options['filename'] if options['filename'] != "" else "NGEN=" + \
