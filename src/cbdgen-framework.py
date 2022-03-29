@@ -16,7 +16,7 @@ import rpy2.robjects as robjects
 
 import setup.setup_framework as setup
 import complexity as complx
-import generate
+import instances_generator.maker as maker
 import preprocess
 
 # TODO: Implement Setup in a minimal main()
@@ -42,18 +42,18 @@ dataset = options['maker'][0]
 
 if(dataset == 1):
     centers = int(options['maker'][1])
-    df = generate.blobs(n_instancias, centers, n_features)
+    df = maker.blobs(n_instancias, centers, n_features)
 if (dataset == 2):
     noise = options['maker'][1]
-    df = generate.moons(n_instancias, noise)
+    df = maker.moons(n_instancias, noise)
 if (dataset == 3):
     noise = options['maker'][1]
-    df = generate.circles(n_instancias, noise)
+    df = maker.circles(n_instancias, noise)
 if (dataset == 4):
-    df = generate.classification(n_instancias, n_features, n_classes)
+    df = maker.classification(n_instancias, n_features, n_classes)
 if (dataset == 5):
     n_labels = int(options['maker'][1])
-    df = generate.multilabel_classification(n_instancias, n_features, n_classes, n_labels)
+    df = maker.multilabel_classification(n_instancias, n_features, n_classes, n_labels)
 
 filename = options['filename'] if options['filename'] != "" else "NGEN=" + \
     str(NGEN)
