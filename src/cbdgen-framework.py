@@ -15,8 +15,8 @@ from deap import algorithms
 import rpy2.robjects as robjects
 
 import setup.setup_framework as setup
+from instances_generator.generator import InstancesGenerator
 import complexity as complx
-import instances_generator.maker as maker
 import preprocess
 
 # TODO: Implement Setup in a minimal main()
@@ -34,26 +34,9 @@ MUTPB = 0.2
 INDPB = 0.05
 POP = 100
 
-n_instancias = options['samples']
-n_features = options['attributes']
-n_classes = options['classes']
-
-dataset = options['maker'][0]
-
-if(dataset == 1):
-    centers = int(options['maker'][1])
-    df = maker.blobs(n_instancias, centers, n_features)
-if (dataset == 2):
-    noise = options['maker'][1]
-    df = maker.moons(n_instancias, noise)
-if (dataset == 3):
-    noise = options['maker'][1]
-    df = maker.circles(n_instancias, noise)
-if (dataset == 4):
-    df = maker.classification(n_instancias, n_features, n_classes)
-if (dataset == 5):
-    n_labels = int(options['maker'][1])
-    df = maker.multilabel_classification(n_instancias, n_features, n_classes, n_labels)
+# TODO: Implement Generator of Instances in a minimal main()
+gen_instances = InstancesGenerator(options)
+df = gen_instances.generate(options['maker'][0])
 
 filename = options['filename'] if options['filename'] != "" else "NGEN=" + \
     str(NGEN)
@@ -120,7 +103,7 @@ else:
         globalF2 = float(objetivo)
         filename += "-F2"
 
-N_ATTRIBUTES = int(n_instancias)
+N_ATTRIBUTES = int(options['samples']) # mispelled variable name
 print(metricasList, len(metricasList))
 print(globalN1, globalLinear, globalBalance, globalF2)
 NOBJ = len(metricasList)
@@ -207,7 +190,7 @@ creator.create("FitnessMin", base.Fitness, weights=(-1.0,)*NOBJ)
 creator.create("Individual", list, fitness=creator.FitnessMin)
 
 RANDINT_LOW = 0
-RANDINT_UP = n_classes - 1
+RANDINT_UP = options['classes'] - 1
 
 toolbox = base.Toolbox()
 toolbox.register("attr_int", random.randint, RANDINT_LOW, RANDINT_UP)
