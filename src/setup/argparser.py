@@ -21,6 +21,13 @@ def parse_args() -> argparse.ArgumentParser:
                         type=int,
                         default=2
                         )
+    parser.add_argument('-b','--based-on',
+                        dest='option_based_on',
+                        help="Allows the framework to run on based-on mode by" 
+                        "passing the filepath of the data set",
+                        type=str,
+                        default=""
+                        )
     parser.add_argument('--classes',
                         dest='number_of_classes',
                         help="number of classes to be targeted"
