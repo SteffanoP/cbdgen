@@ -22,8 +22,8 @@ def parse_args() -> argparse.ArgumentParser:
                         default=2
                         )
     parser.add_argument('-b','--based-on',
-                        dest='option_based_on',
-                        help="Allows the framework to run on based-on mode by" 
+                        dest='option_based_on_filepath',
+                        help="Allows the framework to run on based-on mode by " 
                         "passing the filepath of the data set",
                         type=str,
                         default=""
