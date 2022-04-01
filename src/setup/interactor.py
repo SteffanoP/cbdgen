@@ -3,9 +3,12 @@ from setup.options_types.cm import cm
 def terminal_input() -> dict:
     inpt = {}
     inpt['maker'] = maker_type_input()
-    inpt['samples'] = samples_input()
-    inpt['attributes'] = attributes_input()
-    inpt['classes'] = classes_input()
+    filepath = filepath_input() # This refers to the based-on filepath mode
+    inpt['filepath'] = filepath
+    if filepath is "":
+        inpt['samples'] = samples_input()
+        inpt['attributes'] = attributes_input()
+        inpt['classes'] = classes_input()
     inpt['filename'] = filename_input()
 
     # Reading and Separating Measures
@@ -59,6 +62,13 @@ def classes_input() -> int:
 def filename_input() -> int:
     return __input_with_default__(
         "Como deseja nomear o arquivo do dataset gerado?\n", "", data_type=str)
+    
+def filepath_input() -> str:
+    q = "Você deseja basear as métricas a um dataset já existente? (y/N)"
+    if input(q) is 'y':
+        return __input_with_default__("Digite o caminho para o dataset", "", 
+                                      str)
+    return ""
 
 def measures_input() -> list:
     print("Escolha quais métricas e valores que deseja otimizar")
