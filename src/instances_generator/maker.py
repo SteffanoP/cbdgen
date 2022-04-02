@@ -13,19 +13,92 @@ from sklearn.datasets import make_multilabel_classification as make_mlabel_class
 RANDOM_SEED = np.random.randint(2 ** 10)
 
 def blobs(samples, centers, features):
+    """
+    Generate isotropic Gaussian blobs for clustering, but resumes to 3 main
+    parameters.
+
+    See more at <https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_blobs.html>
+
+    Parameters
+    ----------
+        samples : int
+            The total number of points equally divided among clusters.
+        centers : int
+            The number of centers to generate, or the fixed center locations.
+        features : int
+            The number of features for each sample.
+
+    Returns
+    -------
+        DataFrame : pandas.DataFrame
+            A DataFrame of the generated samples grouped by x and y.
+    """
     X, y = make_blobs(n_samples=samples, centers=centers, 
                         n_features=features)
     return _create_pd_dataframe(X, y)
 
 def moons(samples, noise):
+    """
+    Make two interleaving half circles.
+
+    See more at <https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_moons.html>
+
+    Parameters
+    ----------
+        samples : int
+            The total number of points generated.
+        noise : int
+            Standard deviation of Gaussian noise added to the data.
+
+    Returns
+    -------
+        DataFrame : pandas.DataFrame
+            A DataFrame of the generated samples grouped by x and y.
+    """
     X, y = make_moons(n_samples=samples, noise=noise)
     return _create_pd_dataframe(X, y)
 
 def circles(samples, noise):
+    """
+    Make a large circle containing a smaller circle in 2d.
+
+    See more: <https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_circles.html>
+
+    Parameters
+    ----------
+        samples : int
+            The total number of points generated.
+        noise : int
+            Standard deviation of Gaussian noise added to the data.
+
+    Returns
+    -------
+        DataFrame : pandas.DataFrame
+            A DataFrame of the generated samples grouped by x and y.
+    """
     X, y = make_circles(n_samples=samples, noise=noise)
     return _create_pd_dataframe(X, y)
 
 def classification(samples, features, classes):
+    """
+    Generate a random n-class classification problem.
+
+    See more at <https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_blobs.html>
+
+    Parameters
+    ----------
+        samples : int
+            The total number of points.
+        features : int
+            The number of informative features.
+        features : int
+            The number of features for each sample.
+
+    Returns
+    -------
+        DataFrame : pandas.DataFrame
+            A DataFrame of the generated samples grouped by x and y.
+    """
     X, y = make_classification(
         n_samples=samples, 
         n_features=features, 
