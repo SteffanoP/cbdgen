@@ -14,6 +14,8 @@ def setup_interative() -> dict:
     options['maker'] = interactor.maker_type_input()
     filepath, label_name = interactor.based_mode_input()  
     options['filepath'] = filepath
+    options['label_name'] = label_name
+    measures = interactor.measures_input()
     
     # Check if is in normal mode or based-on mode
     # Refers to the normal mode
@@ -21,13 +23,14 @@ def setup_interative() -> dict:
         options['samples'] = interactor.samples_input()
         options['attributes'] = interactor.attributes_input()
         options['classes'] = interactor.classes_input()
-        measures = interactor.measures_input()
 
     # Refers to the based-on mode
     if filepath != "":
         df, label = read_based_on_dataset(filepath, label_name)
-        options['samples', 'attributes', 'classes'] = extract_properties(df, 
-                                                                      label)
+        samples, attributes, classes = extract_properties(df, label)
+        options |= {'samples': samples,
+                    'attributes': attributes,
+                    'classes': classes}
         # TODO: Extract Measures from the real dataset
     
     options['filename'] = interactor.filename_input()
@@ -47,6 +50,8 @@ def setup_non_interative(args) -> dict:
     filepath = args.option_based_on_filepath_label[0]
     label_name = args.option_based_on_filepath_label[1]
     options['filepath'] = filepath
+    options['label_name'] = label_name
+    measures = args.cm
     
     # Check if is in normal mode or based-on mode
     # Refers to normal mode
@@ -54,13 +59,14 @@ def setup_non_interative(args) -> dict:
         options['classes'] = args.number_of_classes
         options['attributes'] = args.number_of_attributes
         options['samples'] = args.number_of_instances
-        measures = args.cm
         
     # Refers to based-on mode
     if filepath != "":
         df, label = read_based_on_dataset(filepath, label_name)
-        options['samples', 'attributes', 'classes'] = extract_properties(df,
-                                                                         label)
+        samples, attributes, classes = extract_properties(df, label)
+        options |= {'samples':samples,
+                    'attributes':attributes,
+                    'classes':classes}
         # TODO: Extract Measures from the real dataset
     
     options['NGEN'] = args.number_of_generations
