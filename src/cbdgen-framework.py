@@ -29,6 +29,7 @@ SCALES = [1]
 tread = ""
 select_new_dataset = "N"
 NGEN = 1000
+# NGEN = options['NGEN']
 CXPB = 0.7
 MUTPB = 0.2
 INDPB = 0.05
@@ -44,9 +45,8 @@ filename = options['filename'] if options['filename'] != "" else "NGEN=" + \
 metricasList = options['measures']
 
 if (options['filepath'] != ""):
-    base_dataset = load_iris()
-    base_df = pd.DataFrame(data=np.c_[base_dataset['data'], base_dataset['target']], columns=base_dataset['feature_names'] + ['target'])
-    target = "target"
+    base_df = pd.read_csv(options['filepath'])
+    target = options['label_name']
 
     # Copying Columns names
     df.columns = preprocess.copyFeatureNamesFrom(base_df, label_name=target)
