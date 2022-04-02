@@ -42,12 +42,21 @@ def filename_input() -> int:
     return __input_with_default__(
         "Como deseja nomear o arquivo do dataset gerado?\n", "", data_type=str)
     
-def filepath_input() -> str:
+def based_mode_input() -> str:
     q = "Você deseja basear as métricas a um dataset já existente? (y/N)"
     if input(q) is 'y':
-        return __input_with_default__("Digite o caminho para o dataset", "", 
-                                      str)
-    return ""
+        filepath = __input_with_default__(
+            input_text="Digite o caminho para o dataset",
+            default_value="",
+            data_type=str
+        )
+        label = __input_with_default__(
+            input_text="Digite o nome da classe target do data set",
+            default_value="",
+            data_type=str
+        )
+        return filepath, label
+    return "", ""
 
 def measures_input() -> list:
     print("Escolha quais métricas e valores que deseja otimizar")
@@ -66,7 +75,7 @@ def measures_input() -> list:
     # Appends every Complexity Measure in measures list
     return [cm(measure) for measure in input_Stream]
 
-def __input_with_default__(input_text: str, default_value, data_type):
+def __input_with_default__(input_text: str, default_value, data_type: type):
     try:
         return data_type(input(input_text))
     except ValueError:
