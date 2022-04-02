@@ -1,26 +1,5 @@
 from setup.options_types.cm import cm
 
-def terminal_input() -> dict:
-    inpt = {}
-    inpt['maker'] = maker_type_input()
-    filepath = filepath_input() # This refers to the based-on filepath mode
-    inpt['filepath'] = filepath
-    if filepath is "":
-        inpt['samples'] = samples_input()
-        inpt['attributes'] = attributes_input()
-        inpt['classes'] = classes_input()
-    inpt['filename'] = filename_input()
-
-    # Reading and Separating Measures
-    measures = measures_input()
-    if measures != None:
-        inpt['measures'] = []
-        for measure in measures:
-            inpt['measures'].append(measure[0])
-            inpt[measure[0]] = measure[1]
-
-    return inpt
-
 def maker_type_input() -> int:
     print("Escolha que tipo de base deseja gerar:")
     print("Escolha 1 - Para bolhas de pontos com uma distribuição gaussiana.")
