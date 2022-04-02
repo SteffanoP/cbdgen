@@ -22,11 +22,12 @@ def parse_args() -> argparse.ArgumentParser:
                         default=2
                         )
     parser.add_argument('-b','--based-on',
-                        dest='option_based_on_filepath',
+                        dest='option_based_on_filepath_label',
                         help="Allows the framework to run on based-on mode by " 
                         "passing the filepath of the data set",
+                        nargs=2,
                         type=str,
-                        default=""
+                        default=["",""]
                         )
     parser.add_argument('--classes',
                         dest='number_of_classes',
@@ -57,6 +58,7 @@ def parse_args() -> argparse.ArgumentParser:
                         type=int,
                         default=100
                         )
+    # TODO: flag --maker must be a required flag
     parser.add_argument('--maker',
                         dest="maker",
                         help="The maker to generate a random dataset.",

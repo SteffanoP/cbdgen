@@ -41,12 +41,9 @@ df = gen_instances.generate(options['maker'][0])
 filename = options['filename'] if options['filename'] != "" else "NGEN=" + \
     str(NGEN)
 
-print("Você deseja basear as métricas a um dataset já existente? (y/N)")
-escolha = input()
-
 metricasList = options['measures']
 
-if (escolha == 'y'):
+if (options['filepath'] != ""):
     base_dataset = load_iris()
     base_df = pd.DataFrame(data=np.c_[base_dataset['data'], base_dataset['target']], columns=base_dataset['feature_names'] + ['target'])
     target = "target"
