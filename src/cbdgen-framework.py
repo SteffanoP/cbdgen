@@ -15,8 +15,8 @@ from deap import algorithms
 import rpy2.robjects as robjects
 
 import setup.setup_framework as setup
+from instances_generator.generator import InstancesGenerator
 import complexity as complx
-import generate
 import preprocess
 
 # TODO: Implement Setup in a minimal main()
@@ -29,44 +29,24 @@ SCALES = [1]
 tread = ""
 select_new_dataset = "N"
 NGEN = 1000
+# NGEN = options['NGEN']
 CXPB = 0.7
 MUTPB = 0.2
 INDPB = 0.05
 POP = 100
 
-n_instancias = options['samples']
-n_features = options['attributes']
-n_classes = options['classes']
-
-dataset = options['maker'][0]
-
-if(dataset == 1):
-    centers = int(options['maker'][1])
-    df = generate.blobs(n_instancias, centers, n_features)
-if (dataset == 2):
-    noise = options['maker'][1]
-    df = generate.moons(n_instancias, noise)
-if (dataset == 3):
-    noise = options['maker'][1]
-    df = generate.circles(n_instancias, noise)
-if (dataset == 4):
-    df = generate.classification(n_instancias, n_features, n_classes)
-if (dataset == 5):
-    n_labels = int(options['maker'][1])
-    df = generate.multilabel_classification(n_instancias, n_features, n_classes, n_labels)
+# TODO: Implement Generator of Instances in a minimal main()
+gen_instances = InstancesGenerator(options)
+df = gen_instances.generate(options['maker'][0])
 
 filename = options['filename'] if options['filename'] != "" else "NGEN=" + \
     str(NGEN)
 
-print("Você deseja basear as métricas a um dataset já existente? (y/N)")
-escolha = input()
-
 metricasList = options['measures']
 
-if (escolha == 'y'):
-    base_dataset = load_iris()
-    base_df = pd.DataFrame(data=np.c_[base_dataset['data'], base_dataset['target']], columns=base_dataset['feature_names'] + ['target'])
-    target = "target"
+if (options['filepath'] != ""):
+    base_df = pd.read_csv(options['filepath'])
+    target = options['label_name']
 
     # Copying Columns names
     df.columns = preprocess.copyFeatureNamesFrom(base_df, label_name=target)
@@ -120,7 +100,7 @@ else:
         globalF2 = float(objetivo)
         filename += "-F2"
 
-N_ATTRIBUTES = int(n_instancias)
+N_ATTRIBUTES = int(options['samples']) # mispelled variable name
 print(metricasList, len(metricasList))
 print(globalN1, globalLinear, globalBalance, globalF2)
 NOBJ = len(metricasList)
@@ -207,7 +187,7 @@ creator.create("FitnessMin", base.Fitness, weights=(-1.0,)*NOBJ)
 creator.create("Individual", list, fitness=creator.FitnessMin)
 
 RANDINT_LOW = 0
-RANDINT_UP = n_classes - 1
+RANDINT_UP = options['classes'] - 1
 
 toolbox = base.Toolbox()
 toolbox.register("attr_int", random.randint, RANDINT_LOW, RANDINT_UP)

@@ -1,23 +1,5 @@
 from setup.options_types.cm import cm
 
-def terminal_input() -> dict:
-    inpt = {}
-    inpt['maker'] = maker_type_input()
-    inpt['samples'] = samples_input()
-    inpt['attributes'] = attributes_input()
-    inpt['classes'] = classes_input()
-    inpt['filename'] = filename_input()
-
-    # Reading and Separating Measures
-    measures = measures_input()
-    if measures != None:
-        inpt['measures'] = []
-        for measure in measures:
-            inpt['measures'].append(measure[0])
-            inpt[measure[0]] = measure[1]
-
-    return inpt
-
 def maker_type_input() -> int:
     print("Escolha que tipo de base deseja gerar:")
     print("Escolha 1 - Para bolhas de pontos com uma distribuição gaussiana.")
@@ -59,6 +41,22 @@ def classes_input() -> int:
 def filename_input() -> int:
     return __input_with_default__(
         "Como deseja nomear o arquivo do dataset gerado?\n", "", data_type=str)
+    
+def based_mode_input() -> str:
+    q = "Você deseja basear as métricas a um dataset já existente? (y/N)"
+    if input(q) is 'y':
+        filepath = __input_with_default__(
+            input_text="Digite o caminho para o dataset",
+            default_value="",
+            data_type=str
+        )
+        label = __input_with_default__(
+            input_text="Digite o nome da classe target do data set",
+            default_value="",
+            data_type=str
+        )
+        return filepath, label
+    return "", ""
 
 def measures_input() -> list:
     print("Escolha quais métricas e valores que deseja otimizar")
@@ -77,7 +75,7 @@ def measures_input() -> list:
     # Appends every Complexity Measure in measures list
     return [cm(measure) for measure in input_Stream]
 
-def __input_with_default__(input_text: str, default_value, data_type):
+def __input_with_default__(input_text: str, default_value, data_type: type):
     try:
         return data_type(input(input_text))
     except ValueError:

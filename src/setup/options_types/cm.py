@@ -2,7 +2,7 @@
 
 import argparse
 
-def cm(s):
+def cm(s) -> tuple[str, float]:
     try:
         x, y = s.split(':')
         y = float(y)
