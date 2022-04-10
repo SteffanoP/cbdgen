@@ -20,14 +20,35 @@ class Ecol:
     does treat and convert ECoL to a similar level using rpy2r package to
     convert its functions.
     """
-    def __init__(self, dataframe: DataFrame, label: str) -> None:
+    def __init__(self,
+                 dataframe: DataFrame,
+                 label: str,
+                 summary: str = None) -> None:
         pandas2ri.activate()
+
+        # Set up of DataFrame and ECoL formula
         self.r_df, self.fml = self._conversion_formula(dataframe, label)
         self.ecol = rpackages.importr('ECoL')
 
+        """
+        Summarization of complexity multiple complexity values
+        Default summary is None which corresponds to return only mean values
+        """
+        if summary is None:
+            self.feature_based = self._feature_based
+            self.neighborhood = self._neighborhood
+            self.linearity = self._linearity
+            self.dimensionality = self._dimensionality
+            self.class_balance = self._class_balance
+            self.structural = self._structural
+            self.feature_correlation = self._feature_correlation
+            self.feature_correlation = self._smoothness
+        #TODO: Factory functions for summaries (e.g. "mean", "sd", "median")
+
     #TODO: Create a method to extract all measures from a dataset
     #TODO: Create a method to extract a list of measures from multiple subgroups
-    def feature_based(self, *measure: str) -> tuple:
+    #TODO: Implement extraction of multiple measures for subgroups
+    def _feature_based(self, *measure: str):
         """
         Method to extract feature based measures (some known as overlapping).
 
@@ -37,8 +58,7 @@ class Ecol:
 
         Returns
         -------
-            tuple : Tuple of complexity with mean and standard deviation values
-            .
+            Mean value of feature based complexity.
 
         Details
         -------
@@ -83,10 +103,9 @@ class Ecol:
         if len(measure) == 1:
             feature_vector = self.ecol.overlapping(self.fml, self.r_df,
                                                    measures=measure[0])
-            return feature_vector[0][0], feature_vector[0][1]
-        #TODO: Implement extraction of multiple measures for subgroups
+            return feature_vector[0][0]
 
-    def neighborhood(self, *measure: str) -> tuple:
+    def _neighborhood(self, *measure: str):
         """
         Method to extract neighborhood measures.
 
@@ -96,8 +115,7 @@ class Ecol:
 
         Returns
         -------
-            tuple : Tuple of complexity with mean and standard deviation values
-            .
+            Mean value of neighborhood complexity.
 
         Details
         -------
@@ -149,9 +167,9 @@ class Ecol:
         if len(measure) == 1:
             neighborhood_vector = self.ecol.neighborhood(self.fml, self.r_df,
                                                          measures=measure[0])
-            return neighborhood_vector[0][0], neighborhood_vector[0][1]
+            return neighborhood_vector[0][0]
 
-    def linearity(self, *measure: str) -> tuple:
+    def _linearity(self, *measure: str):
         """
         Method to extract linearity measures.
 
@@ -161,8 +179,7 @@ class Ecol:
 
         Returns
         -------
-            tuple : Tuple of complexity with mean and standard deviation values
-            .
+            Mean value of linearity complexity.
 
         Details
         -------
@@ -192,9 +209,9 @@ class Ecol:
         if len(measure) == 1:
             linearity_vector = self.ecol.linearity(self.fml, self.r_df,
                                                    measures=measure[0])
-            return linearity_vector[0][0], linearity_vector[0][1]
+            return linearity_vector[0][0]
 
-    def dimensionality(self, *measure: str):
+    def _dimensionality(self, *measure: str):
         """
         Method to extract dimensionality measures.
 
@@ -236,7 +253,7 @@ class Ecol:
                                                              measure[0])
             return dimensionality_vector[0]
 
-    def class_balance(self, *measure: str):
+    def _class_balance(self, *measure: str):
         """
         Method to extract class balance measures.
 
@@ -273,7 +290,7 @@ class Ecol:
                                                measures=measure[0])
             return balance_vector[0][0]
 
-    def structural(self, *measure: str):
+    def _structural(self, *measure: str):
         """
         Method to extract structural measures (some known as network measures).
 
@@ -317,7 +334,7 @@ class Ecol:
                                                measures=measure[0])
             return network_vector[0][0]
 
-    def feature_correlation(self, *measure: str) -> tuple:
+    def _feature_correlation(self, *measure: str):
         """
         Method to extract feature correlation measures.
 
@@ -327,8 +344,7 @@ class Ecol:
 
         Returns
         -------
-            tuple : Tuple of complexity with mean and standard deviation values
-            .
+            Mean value of feature correlation complexity.
 
         Details
         -------
@@ -364,7 +380,7 @@ class Ecol:
                                                        measures=measure[0])
             return correlation_vector[0][0], correlation_vector[0][1]
 
-    def smoothness(self, *measure: str) -> tuple:
+    def _smoothness(self, *measure: str):
         """
         Method to extract smoothness measures.
 
@@ -374,8 +390,7 @@ class Ecol:
 
         Returns
         -------
-            tuple : Tuple of complexity with mean and standard deviation values
-            .
+            Mean value of smoothness complexity.
 
         Details
         -------
@@ -410,7 +425,7 @@ class Ecol:
         if len(measure) == 1:
             smoothness_vector = self.ecol.smoothness(self.fml, self.r_df,
                                                      measures=measure[0])
-            return smoothness_vector[0][0], smoothness_vector[0][1]
+            return smoothness_vector[0][0]
 
     @staticmethod
     def _conversion_formula(dataframe: DataFrame, label: str) -> tuple[DataFrame, Formula]:
