@@ -104,6 +104,7 @@ class Ecol:
             feature_vector = self.ecol.overlapping(self.fml, self.r_df,
                                                    measures=measure[0])
             return feature_vector[0][0]
+        return None
 
     def _neighborhood(self, *measure: str):
         """
@@ -168,6 +169,7 @@ class Ecol:
             neighborhood_vector = self.ecol.neighborhood(self.fml, self.r_df,
                                                          measures=measure[0])
             return neighborhood_vector[0][0]
+        return None
 
     def _linearity(self, *measure: str):
         """
@@ -210,6 +212,7 @@ class Ecol:
             linearity_vector = self.ecol.linearity(self.fml, self.r_df,
                                                    measures=measure[0])
             return linearity_vector[0][0]
+        return None
 
     def _dimensionality(self, *measure: str):
         """
@@ -252,6 +255,7 @@ class Ecol:
                                                              measures=
                                                              measure[0])
             return dimensionality_vector[0]
+        return None
 
     def _class_balance(self, *measure: str):
         """
@@ -289,6 +293,7 @@ class Ecol:
             balance_vector = self.ecol.balance(self.fml, self.r_df,
                                                measures=measure[0])
             return balance_vector[0][0]
+        return None
 
     def _structural(self, *measure: str):
         """
@@ -333,6 +338,7 @@ class Ecol:
             network_vector = self.ecol.network(self.fml, self.r_df,
                                                measures=measure[0])
             return network_vector[0][0]
+        return None
 
     def _feature_correlation(self, *measure: str):
         """
@@ -379,6 +385,7 @@ class Ecol:
             correlation_vector = self.ecol.correlation(self.fml, self.r_df,
                                                        measures=measure[0])
             return correlation_vector[0][0], correlation_vector[0][1]
+        return None
 
     def _smoothness(self, *measure: str):
         """
@@ -426,6 +433,7 @@ class Ecol:
             smoothness_vector = self.ecol.smoothness(self.fml, self.r_df,
                                                      measures=measure[0])
             return smoothness_vector[0][0]
+        return None
 
     @staticmethod
     def _conversion_formula(dataframe: DataFrame, label: str) -> tuple[DataFrame, Formula]:
