@@ -9,6 +9,7 @@ Python method/functions.
 
 More details at: <https://github.com/lpfgarcia/ECoL/tree/0.3.0>
 """
+import numpy as np
 from pandas import DataFrame
 from rpy2.robjects import pandas2ri, Formula
 import rpy2.robjects.packages as rpackages
@@ -48,7 +49,7 @@ class Ecol:
     #TODO: Create a method to extract all measures from a dataset
     #TODO: Create a method to extract a list of measures from multiple subgroups
     #TODO: Implement extraction of multiple measures for subgroups
-    def _feature_based(self, *measure: str):
+    def _feature_based(self, *measure: str) -> np.float64:
         """
         Method to extract feature based measures (some known as overlapping).
 
@@ -58,7 +59,7 @@ class Ecol:
 
         Returns
         -------
-            Mean value of feature based complexity.
+            np.float64 : Mean value of feature based complexity.
 
         Details
         -------
@@ -106,7 +107,7 @@ class Ecol:
             return feature_vector[0][0]
         return None
 
-    def _neighborhood(self, *measure: str):
+    def _neighborhood(self, *measure: str) -> np.float64:
         """
         Method to extract neighborhood measures.
 
@@ -116,7 +117,7 @@ class Ecol:
 
         Returns
         -------
-            Mean value of neighborhood complexity.
+            np.float64 : Mean value of neighborhood complexity.
 
         Details
         -------
@@ -171,7 +172,7 @@ class Ecol:
             return neighborhood_vector[0][0]
         return None
 
-    def _linearity(self, *measure: str):
+    def _linearity(self, *measure: str) -> np.float64:
         """
         Method to extract linearity measures.
 
@@ -181,7 +182,7 @@ class Ecol:
 
         Returns
         -------
-            Mean value of linearity complexity.
+            np.float64 : Mean value of linearity complexity.
 
         Details
         -------
@@ -214,7 +215,7 @@ class Ecol:
             return linearity_vector[0][0]
         return None
 
-    def _dimensionality(self, *measure: str):
+    def _dimensionality(self, *measure: str) -> np.float64:
         """
         Method to extract dimensionality measures.
 
@@ -224,7 +225,7 @@ class Ecol:
 
         Returns
         -------
-            Complexity value for dimensionality.
+            np.float64 : Complexity value for dimensionality.
 
         Details
         -------
@@ -257,7 +258,7 @@ class Ecol:
             return dimensionality_vector[0]
         return None
 
-    def _class_balance(self, *measure: str):
+    def _class_balance(self, *measure: str) -> np.float64:
         """
         Method to extract class balance measures.
 
@@ -267,7 +268,7 @@ class Ecol:
 
         Returns
         -------
-            Complexity value for class balance.
+            np.float64 : Complexity value for class balance.
 
         Details
         -------
@@ -295,7 +296,7 @@ class Ecol:
             return balance_vector[0][0]
         return None
 
-    def _structural(self, *measure: str):
+    def _structural(self, *measure: str) -> np.float64:
         """
         Method to extract structural measures (some known as network measures).
 
@@ -305,7 +306,7 @@ class Ecol:
 
         Returns
         -------
-            Complexity value for structural.
+            np.float64 : Complexity value for structural.
 
         Details
         -------
@@ -340,7 +341,7 @@ class Ecol:
             return network_vector[0][0]
         return None
 
-    def _feature_correlation(self, *measure: str):
+    def _feature_correlation(self, *measure: str) -> np.float64:
         """
         Method to extract feature correlation measures.
 
@@ -350,7 +351,7 @@ class Ecol:
 
         Returns
         -------
-            Mean value of feature correlation complexity.
+            np.float64 : Mean value of feature correlation complexity.
 
         Details
         -------
@@ -387,7 +388,7 @@ class Ecol:
             return correlation_vector[0][0], correlation_vector[0][1]
         return None
 
-    def _smoothness(self, *measure: str):
+    def _smoothness(self, *measure: str) -> np.float64:
         """
         Method to extract smoothness measures.
 
@@ -397,7 +398,7 @@ class Ecol:
 
         Returns
         -------
-            Mean value of smoothness complexity.
+            np.float64 : Mean value of smoothness complexity.
 
         Details
         -------
