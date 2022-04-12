@@ -9,7 +9,7 @@ Features
 from pandas import DataFrame
 from meta_features.ecol import Ecol
 
-complexity_measures_prefixes = {
+COMPLEXITY_MEASURES_PREFIX = {
     'F': 'feature_based',
     'N': 'neighborhood',
     'L': 'linearity',
@@ -24,10 +24,10 @@ def complexity(dataframe: DataFrame,
     """
     Complexity extractor is a function that is able to extract Data Complexity
     Values from a given Data Set. For now, this function is strongly dependent
-    of the ECoL package to extract each Complexity Measure.
+    of the ECoL package/object to extract each Complexity Measure.
 
-    This function is able to extract a list of values by specifying a list of
-    measures desired to extract.
+    This function extracts a list of values by creating an ECoL object and
+    specifying a list of measures desired to extract.
 
     Parameters
     ----------
@@ -41,5 +41,27 @@ def complexity(dataframe: DataFrame,
         list : List of Data Complexity Values extracted.
     """
     ecol = Ecol(dataframe=dataframe, label=label)
-    return [getattr(ecol, complexity_measures_prefixes[measure[0]])(measure)
+    return [getattr(ecol, COMPLEXITY_MEASURES_PREFIX[measure[0]])(measure)
             for measure in measures]
+
+def complexity_optimized(ecol: Ecol, measure: str):
+    """
+    This function extracts a complexity value given an ECoL object to extract
+    from.
+
+    Parameters
+    ----------
+        ecol : Ecol object to extract our measures.
+        measure : the measure to be extracted.
+
+    Returns
+    -------
+        Complexity value of the measure.
+
+    Details
+    -------
+    Complexity extractor is a function that is able to extract Data Complexity
+    Values from a given Data Set. For now, this function is strongly dependent
+    of the ECoL package/object to extract each Complexity Measure.
+    """
+    return getattr(ecol, COMPLEXITY_MEASURES_PREFIX[measure[0]])(measure)
