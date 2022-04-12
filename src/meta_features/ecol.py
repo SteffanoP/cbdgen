@@ -46,6 +46,17 @@ class Ecol:
             self.feature_correlation = self._smoothness
         #TODO: Factory functions for summaries (e.g. "mean", "sd", "median")
 
+    def update_label(self, label) -> None:
+        """
+        Update the label column of the data set.
+
+        Parameters
+        ----------
+            label : A label column to update in the data set
+
+        """
+        self.r_df['label'] = label
+
     #TODO: Create a method to extract all measures from a dataset
     #TODO: Create a method to extract a list of measures from multiple subgroups
     #TODO: Implement extraction of multiple measures for subgroups
