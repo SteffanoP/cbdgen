@@ -55,7 +55,7 @@ class Ecol:
             label : A label column to update in the data set
 
         """
-        self.r_df['label'] = label
+        self.r_df[self.r_df.colnames.index('label')] = np.array(label)
 
     #TODO: Create a method to extract all measures from a dataset
     #TODO: Create a method to extract a list of measures from multiple subgroups

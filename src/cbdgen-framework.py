@@ -79,6 +79,7 @@ ref_points = ref_points[uniques]
 def my_evaluate(individual):
     vetor = []
     dataFrame['label'] = individual
+    ecolTest.update_label(individual)
     robjects.globalenv['dataFrame'] = dataFrame
 
     for global_value, metrica in zip(global_measures, metrics):
@@ -90,6 +91,7 @@ def my_evaluate(individual):
 def print_evaluate(individual):
     vetor = []
     dataFrame['label'] = individual
+    ecolTest.update_label(individual)
     robjects.globalenv['dataFrame'] = dataFrame
 
     for metrica in metrics:
