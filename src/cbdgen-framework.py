@@ -79,11 +79,11 @@ ref_points = ref_points[uniques]
 def my_evaluate(individual):
     vetor = []
     dataFrame['label'] = individual
-    ecolTest.update_label(individual)
+    ecol_dataFrame.update_label(individual)
     robjects.globalenv['dataFrame'] = dataFrame
 
     for global_value, metrica in zip(global_measures, metrics):
-        complexity_value = extractor.ecol_complexity(ecolTest, metrica)
+        complexity_value = extractor.ecol_complexity(ecol_dataFrame, metrica)
         vetor.append(abs(global_value - complexity_value))
 
     return tuple(vetor)
@@ -91,11 +91,11 @@ def my_evaluate(individual):
 def print_evaluate(individual):
     vetor = []
     dataFrame['label'] = individual
-    ecolTest.update_label(individual)
+    ecol_dataFrame.update_label(individual)
     robjects.globalenv['dataFrame'] = dataFrame
 
     for metrica in metrics:
-        complexity_value = extractor.ecol_complexity(ecolTest, metrica)
+        complexity_value = extractor.ecol_complexity(ecol_dataFrame, metrica)
         vetor.append(abs(complexity_value))
 
     return tuple(vetor)
@@ -168,7 +168,10 @@ if __name__ == '__main__':
     #dataFrame = pd.read_csv(str(N_ATTRIBUTES) + '.csv')
     #dataFrame = dataFrame.drop('c0', axis=1)
     dataFrame = df
-    ecolTest = Ecol(dataframe=dataFrame, label='label')
+    # This Ecol object should be called according to the variable dataFrame.
+    # If dataFrame is renamed, then ecol_dataFrame should be renamed 
+    # accordingly.
+    ecol_dataFrame = Ecol(dataframe=dataFrame, label='label')
     results = main()
     print("logbook")
     print(results[0][0])
