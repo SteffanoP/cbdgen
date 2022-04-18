@@ -4,7 +4,8 @@ from Data Sets.
 
 Features
 --------
-    complexity: extract data complexity values.
+    complexity : extract data complexity values.
+    ecol_complexity : extract data complexity values given a Ecol object.
 """
 from pandas import DataFrame
 from meta_features.ecol import Ecol
@@ -44,10 +45,10 @@ def complexity(dataframe: DataFrame,
     return [getattr(ecol, COMPLEXITY_MEASURES_PREFIX[measure[0]])(measure)
             for measure in measures]
 
-def complexity_optimized(ecol: Ecol, measure: str):
+def ecol_complexity(ecol: Ecol, measure: str):
     """
-    This function extracts a complexity value given an ECoL object to extract
-    from.
+    This function extracts a complexity value given an ECoL.py object to
+    extract from.
 
     Parameters
     ----------

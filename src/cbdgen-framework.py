@@ -83,7 +83,7 @@ def my_evaluate(individual):
     robjects.globalenv['dataFrame'] = dataFrame
 
     for global_value, metrica in zip(global_measures, metrics):
-        complexity_value = extractor.complexity_optimized(ecolTest, metrica)
+        complexity_value = extractor.ecol_complexity(ecolTest, metrica)
         vetor.append(abs(global_value - complexity_value))
 
     return tuple(vetor)
@@ -95,7 +95,7 @@ def print_evaluate(individual):
     robjects.globalenv['dataFrame'] = dataFrame
 
     for metrica in metrics:
-        complexity_value = extractor.complexity_optimized(ecolTest, metrica)
+        complexity_value = extractor.ecol_complexity(ecolTest, metrica)
         vetor.append(abs(complexity_value))
 
     return tuple(vetor)
