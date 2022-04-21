@@ -23,14 +23,9 @@ import preprocess
 # TODO: Implement Setup in a minimal main()
 options = setup.get_options()
 
-cont = 0
-bobj = 0.4
 P = [12]
 SCALES = [1]
-tread = ""
-select_new_dataset = "N"
-NGEN = 1000
-# NGEN = options['NGEN']
+NGEN = options['NGEN']
 CXPB = 0.7
 MUTPB = 0.2
 INDPB = 0.05
@@ -163,18 +158,13 @@ def main(seed=None):
 
 
 if __name__ == '__main__':
-    cont1 = 0
-    cont0 = 0
-    #dataFrame = pd.read_csv(str(N_ATTRIBUTES) + '.csv')
-    #dataFrame = dataFrame.drop('c0', axis=1)
     dataFrame = df
     # This Ecol object should be called according to the variable dataFrame.
     # If dataFrame is renamed, then ecol_dataFrame should be renamed 
     # accordingly.
     ecol_dataFrame = Ecol(dataframe=dataFrame, label='label')
     results = main()
-    print("logbook")
-    print(results[0][0])
+
     for x in range(len(results[0])):
         dic[print_evaluate(results[0][x])] = results[0][x]
         outfile = open(filename, 'wb')
@@ -185,5 +175,3 @@ if __name__ == '__main__':
     # Scale to original Dataset (Optional) #TODO: Improve preprocessing
     # df = preprocess.scaleColumnsFrom(base_df, df, label_column='label')
     df.to_csv(str(filename)+".csv")
-    ax1 = df.plot.scatter(x=0, y=1, c='label', colormap='Paired')
-    pyplot.show()
