@@ -1,24 +1,20 @@
-import numpy as np
-import pandas as pd
-import random
-import matplotlib.pyplot as plt
 import multiprocessing
 import pickle
-from sklearn.datasets import load_iris
-from matplotlib import pyplot
+import random
 
+import numpy as np
+import pandas as pd
+from deap import algorithms
 from deap import base
 from deap import creator
 from deap import tools
-from deap import algorithms
+from rpy2 import robjects
 
-import rpy2.robjects as robjects
-from meta_features.ecol import Ecol
-
-import setup.setup_framework as setup
-from instances_generator.generator import InstancesGenerator
 import extractor
 import preprocess
+import setup.setup_framework as setup
+from meta_features.ecol import Ecol
+from instances_generator.generator import InstancesGenerator
 
 # TODO: Implement Setup in a minimal main()
 options = setup.get_options()
