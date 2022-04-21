@@ -13,10 +13,11 @@ from deap import tools
 from deap import algorithms
 
 import rpy2.robjects as robjects
+from meta_features.ecol import Ecol
 
 import setup.setup_framework as setup
 from instances_generator.generator import InstancesGenerator
-import complexity as complx
+import extractor
 import preprocess
 
 # TODO: Implement Setup in a minimal main()
@@ -42,68 +43,29 @@ df = gen_instances.generate(options['maker'][0])
 filename = options['filename'] if options['filename'] != "" else "NGEN=" + \
     str(NGEN)
 
-metricasList = options['measures']
+metrics = options['measures']
 
+# TODO: Implement fitness global measures in a minimal main()
+global_measures = []
 if (options['filepath'] != ""):
     base_df = pd.read_csv(options['filepath'])
     target = options['label_name']
 
     # Copying Columns names
-    df.columns = preprocess.copyFeatureNamesFrom(base_df, label_name=target)
+    # df.columns = preprocess.copyFeatureNamesFrom(base_df, label_name=target)
 
-    if ('C2' in metricasList):
-        globalBalance = complx.balance(base_df, target, "C2")
-        filename += "-C2"
-    if ('L2' in metricasList):
-        globalLinear = complx.linearity(base_df, target, "L2")
-        print(globalLinear)
-        filename += "-L2"
-    if ('N1' in metricasList):
-        globalN1 = complx.neighborhood(base_df, target, "N1")
-        filename += "-N1"
-    if ('N2' in metricasList):
-        globalN2 = complx.neighborhood(base_df, target, "N2")
-        filename += "-N2"
-        print("WARNING: N2 is a experimental measure, you may not be able to get efficient results")
-    if ('N1' in metricasList):
-        globalT1 = complx.neighborhood(base_df, target, "T1")
-        filename += "-T1"
-        print("WARNING: T1 is a experimental measure, you may not be able to get efficient results")
-    if ('F2' in metricasList):
-        globalF2 = complx.feature(base_df, target, "F2")
-        filename += "-F2"
+    # Extraction of Data Complexity Values
+    global_measures = tuple(extractor.complexity(base_df, target, metrics))
 else:
-    if ('C2' in metricasList):
-        objetivo = options['C2']
-        globalBalance = float(objetivo)
-        filename += "-C2"
-    if ('L2' in metricasList):
-        objetivo = options['L2']
-        globalLinear = float(objetivo)
-        filename += "-L2"
-    if ('N1' in metricasList):
-        objetivo = options['N1']
-        globalN1 = float(objetivo)
-        filename += "-N1"
-    if ('N2' in metricasList):
-        print("WARNING: N2 is a experimental measure, you may not be able to get efficient results")
-        objetivo = options['N2']
-        globalN2 = float(objetivo)
-        filename += "-N2"
-    if ('T1' in metricasList):
-        print("WARNING: T1 is a experimental measure, you may not be able to get efficient results")
-        objetivo = options['T1']
-        globalT1 = float(objetivo)
-        filename += "-T1"
-    if ('F2' in metricasList):
-        objetivo = options['F2']
-        globalF2 = float(objetivo)
-        filename += "-F2"
+    for metric in metrics:
+        global_measures.append(options[metric])
+    global_measures = tuple(global_measures)
 
+filename += '-' + '-'.join(metrics)
 N_ATTRIBUTES = int(options['samples']) # mispelled variable name
-print(metricasList, len(metricasList))
-print(globalN1, globalLinear, globalBalance, globalF2)
-NOBJ = len(metricasList)
+print(metrics, len(metrics))
+print(global_measures)
+NOBJ = len(metrics)
 
 dic = {}
 
@@ -117,70 +79,26 @@ ref_points = ref_points[uniques]
 def my_evaluate(individual):
     vetor = []
     dataFrame['label'] = individual
+    ecol_dataFrame.update_label(individual)
     robjects.globalenv['dataFrame'] = dataFrame
-    target = "label"
 
-    if('C2' in metricasList):
-        imbalance = complx.balance(dataFrame, target, "C2")
-        vetor.append(abs(globalBalance - imbalance))
-    if ('L2' in metricasList):
-        linearity = complx.linearity(dataFrame, target, "L2")
-        vetor.append(abs(globalLinear - linearity))
-    if ('N1' in metricasList):
-        n1 = complx.neighborhood(dataFrame, target, "N1")
-        vetor.append(abs(globalN1 - n1))
-    if ('N2' in metricasList):
-        n2 = complx.neighborhood(dataFrame, target, "N2")
-        vetor.append(abs(globalN2 - n2))
-    if ('T1' in metricasList):
-        t1 = complx.neighborhood(dataFrame, target, "T1")
-        vetor.append(abs(globalT1 - t1))
-    if ('F2' in metricasList):
-        f2 = complx.feature(dataFrame, target, "F2")
-        vetor.append(abs(globalF2 - f2))
-    ## --
-    if(len(vetor) == 1):
-        return vetor[0],
-    if(len(vetor) == 2):
-        return vetor[0], vetor[1],
-    elif(len(vetor) == 3):
-        return vetor[0], vetor[1], vetor[2],
-    elif(len(vetor) == 4):
-        return vetor[0], vetor[1], vetor[2], vetor[3],
+    for global_value, metrica in zip(global_measures, metrics):
+        complexity_value = extractor.ecol_complexity(ecol_dataFrame, metrica)
+        vetor.append(abs(global_value - complexity_value))
 
+    return tuple(vetor)
 
 def print_evaluate(individual):
     vetor = []
     dataFrame['label'] = individual
+    ecol_dataFrame.update_label(individual)
     robjects.globalenv['dataFrame'] = dataFrame
-    target = "label"
-    if('C2' in metricasList):
-        imbalance = complx.balance(dataFrame, target, "C2")
-        vetor.append(abs(imbalance))
-    if ('L2' in metricasList):
-        linearity = complx.linearity(dataFrame, target, "L2")
-        vetor.append(abs(linearity))
-    if ('N1' in metricasList):
-        n1 = complx.neighborhood(dataFrame, target, "N1")
-        vetor.append(abs(n1))
-    if ('N2' in metricasList):
-        n2 = complx.neighborhood(dataFrame, target, "N2")
-        vetor.append(abs(n2))
-    if ('T1' in metricasList):
-        t1 = complx.neighborhood(dataFrame, target, "T1")
-        vetor.append(abs(t1))
-    if ('F2' in metricasList):
-        f2 = complx.feature(dataFrame, target, "F2")
-        vetor.append(abs(f2))
-    ## --
-    if(len(vetor) == 1):
-        return vetor[0],
-    if(len(vetor) == 2):
-        return vetor[0], vetor[1],
-    elif(len(vetor) == 3):
-        return vetor[0], vetor[1], vetor[2],
-    elif(len(vetor) == 4):
-        return vetor[0], vetor[1], vetor[2], vetor[3],
+
+    for metrica in metrics:
+        complexity_value = extractor.ecol_complexity(ecol_dataFrame, metrica)
+        vetor.append(abs(complexity_value))
+
+    return tuple(vetor)
 
 
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,)*NOBJ)
@@ -250,6 +168,10 @@ if __name__ == '__main__':
     #dataFrame = pd.read_csv(str(N_ATTRIBUTES) + '.csv')
     #dataFrame = dataFrame.drop('c0', axis=1)
     dataFrame = df
+    # This Ecol object should be called according to the variable dataFrame.
+    # If dataFrame is renamed, then ecol_dataFrame should be renamed 
+    # accordingly.
+    ecol_dataFrame = Ecol(dataframe=dataFrame, label='label')
     results = main()
     print("logbook")
     print(results[0][0])
