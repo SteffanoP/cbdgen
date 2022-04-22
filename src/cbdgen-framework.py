@@ -109,7 +109,7 @@ toolbox.register("mutate", tools.mutShuffleIndexes, indpb=INDPB)
 toolbox.register("select", tools.selNSGA3, ref_points=ref_points)
 
 
-def main(seed=None):
+def results(seed=None):
     random.seed(64)
     pool = multiprocessing.Pool(processes=12)
     toolbox.register("map", pool.map)
@@ -159,7 +159,7 @@ if __name__ == '__main__':
     # If dataFrame is renamed, then ecol_dataFrame should be renamed 
     # accordingly.
     ecol_dataFrame = Ecol(dataframe=dataFrame, label='label')
-    results = main()
+    results = results()
 
     for x in range(len(results[0])):
         dic[print_evaluate(results[0][x])] = results[0][x]
