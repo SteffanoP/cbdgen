@@ -20,11 +20,12 @@ from instances_generator.generator import InstancesGenerator
 options = setup.get_options()
 
 # TODO: Implement Generator of Instances in a minimal main()
-gen_instances = InstancesGenerator(options)
-df = gen_instances.generate(options['maker'][0])
-
-filename = options['filename'] if options['filename'] != "" else "NGEN=" + \
-    str(options['NGEN'])
+def generate_instances(samples, attributes, classes, maker: tuple[int,str]
+                       ) -> pd.DataFrame:
+    gen_instances = InstancesGenerator(samples, attributes,
+                                       classes=classes,
+                                       maker_option=maker[1])
+    return gen_instances.generate(maker[0])
 
 metrics = options['measures']
 
