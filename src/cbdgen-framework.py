@@ -31,19 +31,18 @@ metrics = options['measures']
 
 # TODO: Implement fitness global measures in a minimal main()
 global_measures = []
-if (options['filepath'] != ""):
-    base_df = pd.read_csv(options['filepath'])
-    target = options['label_name']
+def complexity_extraction(measures: list[str], *,
+                          dataframe_label: tuple[pd.DataFrame,str]=None,
+                          complexity_values: dict) -> tuple[np.float64]:
+    if dataframe_label is not None:
+        # Copying Columns names
+        # df.columns = preprocess.copyFeatureNamesFrom(base_df, label_name=target)
 
-    # Copying Columns names
-    # df.columns = preprocess.copyFeatureNamesFrom(base_df, label_name=target)
-
-    # Extraction of Data Complexity Values
-    global_measures = tuple(extractor.complexity(base_df, target, metrics))
-else:
-    for metric in metrics:
-        global_measures.append(options[metric])
-    global_measures = tuple(global_measures)
+        # Extraction of Data Complexity Values
+        return tuple(extractor.complexity(dataframe_label[0],
+                                          dataframe_label[1],
+                                          measures))
+    return tuple(complexity_values[cm] for cm in measures)
 
 filename += '-' + '-'.join(metrics)
 N_ATTRIBUTES = int(options['samples']) # mispelled variable name
