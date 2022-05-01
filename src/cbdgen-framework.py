@@ -16,10 +16,6 @@ import setup.setup_framework as setup
 from meta_features.ecol import Ecol
 from instances_generator.generator import InstancesGenerator
 
-# TODO: Implement Setup in a minimal main()
-options = setup.get_options()
-
-# TODO: Implement Generator of Instances in a minimal main()
 def generate_instances(samples, attributes, classes, maker: tuple[int,str]
                        ) -> pd.DataFrame:
     gen_instances = InstancesGenerator(samples, attributes,
@@ -27,10 +23,6 @@ def generate_instances(samples, attributes, classes, maker: tuple[int,str]
                                        maker_option=maker[1])
     return gen_instances.generate(maker[0])
 
-metrics = options['measures']
-
-# TODO: Implement fitness global measures in a minimal main()
-global_measures = []
 def complexity_extraction(measures: list[str], *,
                           dataframe_label: tuple[pd.DataFrame,str]=None,
                           complexity_values: dict) -> tuple[np.float64]:
@@ -45,9 +37,9 @@ def complexity_extraction(measures: list[str], *,
     return tuple(complexity_values[cm] for cm in measures)
 
 # TODO: Build a clever architecture for the filename
-def build_filename(filename: str='', *, ngen: int) -> str:
+def build_filename(filename: str='', *, ngen: int, metrics: list) -> str:
     filename = filename if filename != "" else "NGEN="+ \
-        str(options['NGEN'])
+        str(ngen)
     filename += '-' + '-'.join(metrics)
     return filename
 
@@ -105,7 +97,7 @@ def setup_engine(options):
 
     return toolbox
 
-def results(seed=None):
+def results(options: dict, toolbox: base.Toolbox):
     pop = options['POP']
     cxpb = options['CXPB']
     mutpb = options['MUTPB']
@@ -152,22 +144,55 @@ def results(seed=None):
         print(logbook.stream)
     return tool_pop, logbook
 
+def main():
+    options = setup.get_options()
 
-if __name__ == '__main__':
-    dataFrame = df
+    if options['filepath'] != '':
+        base_df = pd.read_csv(options['filepath'])
+
+    global dataFrame
+    dataFrame = generate_instances(options['samples'], options['attributes'],
+                                   options['classes'], options['maker'])
+
+    complexity_values = {}
+    global metrics
+    metrics = options['measures']
+    for measure in metrics:
+        complexity_values[measure] = options[measure]
+    global global_measures
+    global_measures = complexity_extraction(metrics,
+                                            dataframe_label=(
+                                                base_df, options['label_name']
+                                            ),
+                                            complexity_values=complexity_values
+                                            )
+
+    filename = build_filename(options['filename'],
+                              ngen=options['NGEN'],
+                              metrics=metrics)
+
     # This Ecol object should be called according to the variable dataFrame.
-    # If dataFrame is renamed, then ecol_dataFrame should be renamed 
+    # If dataFrame is renamed, then ecol_dataFrame should be renamed
     # accordingly.
+    global ecol_dataFrame
     ecol_dataFrame = Ecol(dataframe=dataFrame, label='label')
-    results = results()
 
-    for x in range(len(results[0])):
-        dic[print_evaluate(results[0][x])] = results[0][x]
+    print(metrics, len(metrics))
+    print(global_measures)
+    toolbox = setup_engine(options)
+    result = results(options, toolbox)
+
+    compiled_results = {}
+    for x in range(len(result[0])):
+        compiled_results[print_evaluate(result[0][x])] = result[0][x]
         outfile = open(filename, 'wb')
-        pickle.dump(dic, outfile)
+        pickle.dump(compiled_results, outfile)
         outfile.close()
 
-    df['label'] = results[0][0]
+    dataFrame['label'] = result[0][0]
     # Scale to original Dataset (Optional) #TODO: Improve preprocessing
     # df = preprocess.scaleColumnsFrom(base_df, df, label_column='label')
-    df.to_csv(str(filename)+".csv")
+    dataFrame.to_csv(str(filename)+".csv")
+
+if __name__ == '__main__':
+    main()
