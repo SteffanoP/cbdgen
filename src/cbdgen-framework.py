@@ -51,20 +51,6 @@ def build_filename(filename: str='', *, ngen: int) -> str:
     filename += '-' + '-'.join(metrics)
     return filename
 
-N_ATTRIBUTES = int(options['samples']) # mispelled variable name
-print(metrics, len(metrics))
-print(global_measures)
-NOBJ = len(metrics)
-
-dic = {}
-
-# reference points
-ref_points = [tools.uniform_reference_points(
-    NOBJ, p, s) for p, s in zip(options['P'], options['SCALES'])]
-ref_points = np.concatenate(ref_points)
-_, uniques = np.unique(ref_points, axis=0, return_index=True)
-ref_points = ref_points[uniques]
-
 def my_evaluate(individual):
     vetor = []
     dataFrame['label'] = individual
@@ -89,24 +75,35 @@ def print_evaluate(individual):
 
     return tuple(vetor)
 
+def setup_engine(options):
+    N_ATTRIBUTES = int(options['samples']) # mispelled variable name
+    NOBJ = len(options['measures'])
 
-creator.create("FitnessMin", base.Fitness, weights=(-1.0,)*NOBJ)
-creator.create("Individual", list, fitness=creator.FitnessMin)
+    # reference points
+    ref_points = [tools.uniform_reference_points(
+        NOBJ, p, s) for p, s in zip(options['P'], options['SCALES'])]
+    ref_points = np.concatenate(ref_points)
+    _, uniques = np.unique(ref_points, axis=0, return_index=True)
+    ref_points = ref_points[uniques]
 
-RANDINT_LOW = 0
-RANDINT_UP = options['classes'] - 1
+    creator.create("FitnessMin", base.Fitness, weights=(-1.0,)*NOBJ)
+    creator.create("Individual", list, fitness=creator.FitnessMin)
 
-toolbox = base.Toolbox()
-toolbox.register("attr_int", random.randint, RANDINT_LOW, RANDINT_UP)
-toolbox.register("individual", tools.initRepeat,
-                 creator.Individual, toolbox.attr_int, N_ATTRIBUTES)
-toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-toolbox.register("evaluate", my_evaluate)
-toolbox.register("mate", tools.cxTwoPoint)
-INDPB = options['INDPB']
-toolbox.register("mutate", tools.mutShuffleIndexes, indpb=INDPB)
-toolbox.register("select", tools.selNSGA3, ref_points=ref_points)
+    RANDINT_LOW = 0
+    RANDINT_UP = options['classes'] - 1
 
+    toolbox = base.Toolbox()
+    toolbox.register("attr_int", random.randint, RANDINT_LOW, RANDINT_UP)
+    toolbox.register("individual", tools.initRepeat,
+                    creator.Individual, toolbox.attr_int, N_ATTRIBUTES)
+    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+    toolbox.register("evaluate", my_evaluate)
+    toolbox.register("mate", tools.cxTwoPoint)
+    indpb = options['INDPB']
+    toolbox.register("mutate", tools.mutShuffleIndexes, indpb=indpb)
+    toolbox.register("select", tools.selNSGA3, ref_points=ref_points)
+
+    return toolbox
 
 def results(seed=None):
     pop = options['POP']
