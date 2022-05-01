@@ -125,21 +125,21 @@ def setup_engine(options):
 
     # reference points
     ref_points = [tools.uniform_reference_points(
-        NOBJ, p, s) for p, s in zip(options['P'], options['SCALES'])]
+        n_objectives, p, s) for p, s in zip(options['P'], options['SCALES'])]
     ref_points = np.concatenate(ref_points)
     _, uniques = np.unique(ref_points, axis=0, return_index=True)
     ref_points = ref_points[uniques]
 
-    creator.create("FitnessMin", base.Fitness, weights=(-1.0,)*NOBJ)
+    creator.create("FitnessMin", base.Fitness, weights=(-1.0,)*n_objectives)
     creator.create("Individual", list, fitness=creator.FitnessMin)
 
-    RANDINT_LOW = 0
-    RANDINT_UP = options['classes'] - 1
+    randint_down = 0
+    randint_up = options['classes'] - 1
 
     toolbox = base.Toolbox()
-    toolbox.register("attr_int", random.randint, RANDINT_LOW, RANDINT_UP)
+    toolbox.register("attr_int", random.randint, randint_down, randint_up)
     toolbox.register("individual", tools.initRepeat,
-                    creator.Individual, toolbox.attr_int, N_ATTRIBUTES)
+                    creator.Individual, toolbox.attr_int, samples)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("evaluate", my_evaluate)
     toolbox.register("mate", tools.cxTwoPoint)
