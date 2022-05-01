@@ -18,6 +18,21 @@ from instances_generator.generator import InstancesGenerator
 
 def generate_instances(samples, attributes, classes, maker: tuple[int,str]
                        ) -> pd.DataFrame:
+    """
+    Function responsible for the Generatation of Instances, highly dependent
+    of a InstancesGenerator object.
+
+    Parameters
+    ----------
+        samples : Number of instances to be generated.
+        attributes : Number of Attributes/Features to be generated.
+        classes : Number of classes to be classified to a instance.
+        maker : The type of maker that will generate the set of instances.
+
+    Returns
+    -------
+        pandas.DataFrame
+    """
     gen_instances = InstancesGenerator(samples, attributes,
                                        classes=classes,
                                        maker_option=maker[1])
@@ -26,6 +41,20 @@ def generate_instances(samples, attributes, classes, maker: tuple[int,str]
 def complexity_extraction(measures: list[str], *,
                           dataframe_label: tuple[pd.DataFrame,str]=None,
                           complexity_values: dict) -> tuple[np.float64]:
+    """
+    Function that extracts complexity values of a Data Set, highly dependent
+    of a extractor module.
+
+    Parameters
+    ----------
+        measures : A list of complexity measures to extract from the Data Set.
+        dataframe_label : Refers to the DataFrame itself and its label.
+        complexity_values : Dictionary of complexity values (TODO: Simplify!)
+
+    Returns
+    -------
+        tuple[complexity_values]
+    """
     if dataframe_label is not None:
         # Copying Columns names
         # df.columns = preprocess.copyFeatureNamesFrom(base_df, label_name=target)
@@ -38,6 +67,17 @@ def complexity_extraction(measures: list[str], *,
 
 # TODO: Build a clever architecture for the filename
 def build_filename(filename: str='', *, ngen: int, metrics: list) -> str:
+    """
+    Function that builds a filename based on the number of generations and
+    metrics used to optimize.
+
+    Parameters
+    ----------
+        filename : Name or Prefix of the File that contains the result of the
+            optimization process.
+        ngen : Number of generations of the current run of optimization.
+        metrics : A list of metrics used to optimize.
+    """
     filename = filename if filename != "" else "NGEN="+ \
         str(ngen)
     filename += '-' + '-'.join(metrics)
@@ -68,8 +108,20 @@ def print_evaluate(individual):
     return tuple(vetor)
 
 def setup_engine(options):
-    N_ATTRIBUTES = int(options['samples']) # mispelled variable name
-    NOBJ = len(options['measures'])
+    """
+    Function that set up a deap.base.toolbox for the search-engine process
+
+    Parameters
+    ----------
+        options : Dictionary of setup parameters highly necessary to how the
+            search engine will find the solutions
+
+    Returns
+    -------
+        deap.base.Toolbox
+    """
+    samples = int(options['samples'])
+    n_objectives = len(options['measures'])
 
     # reference points
     ref_points = [tools.uniform_reference_points(
@@ -98,6 +150,23 @@ def setup_engine(options):
     return toolbox
 
 def results(options: dict, toolbox: base.Toolbox):
+    """
+    Function that operates the search engine process by operating an
+    evolutional algorithm to find the best results.
+
+    Parameters
+    ----------
+        options : Dictionary of setup parameters highly necessary to how the
+            search engine will find the solutions.
+        toolbox : A Toolbox for evolution that contains evolutionary operators.
+
+    Returns
+    -------
+        deap.base.toolbox.population : A population of the best individuals
+            from the search engine process.
+        deap.tools.logbook : A logbook that contains evolutionary and
+            statistics information about the search process.
+    """
     pop = options['POP']
     cxpb = options['CXPB']
     mutpb = options['MUTPB']
