@@ -44,7 +44,13 @@ def complexity_extraction(measures: list[str], *,
                                           measures))
     return tuple(complexity_values[cm] for cm in measures)
 
-filename += '-' + '-'.join(metrics)
+# TODO: Build a clever architecture for the filename
+def build_filename(filename: str='', *, ngen: int) -> str:
+    filename = filename if filename != "" else "NGEN="+ \
+        str(options['NGEN'])
+    filename += '-' + '-'.join(metrics)
+    return filename
+
 N_ATTRIBUTES = int(options['samples']) # mispelled variable name
 print(metrics, len(metrics))
 print(global_measures)
