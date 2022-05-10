@@ -45,6 +45,7 @@ def setup_interative() -> dict:
         # TODO: Extract Measures from the real dataset
     
     options['filename'] = interactor.filename_input()
+    options['NGEN'] = interactor.generation_input()
 
     # Separating Measures
     if measures != None:
