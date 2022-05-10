@@ -2,11 +2,22 @@ import pandas as pd
 import setup.argparser as argparser
 import setup.interactor as interactor
 
+# TODO: It is necessary to implement a config.json or a parameters.json for 
+# hyperparameters about the search-engine.
+HYPERPARAMETERS = {
+    'P' : [12],
+    'SCALES' : [1],
+    'CXPB' : 0.7,
+    'MUTPB' : 0.2,
+    'INDPB' : 0.05,
+    'POP' : 100
+}
+
 def get_options() -> dict:
     args = argparser.parse_args()
-    if args.option_interative:
-        return setup_interative()
-    return setup_non_interative(args)
+    return (setup_interative() if args.option_interative
+            else setup_non_interative(args)
+           ) | HYPERPARAMETERS
 
 def setup_interative() -> dict:
     options = {}
@@ -34,6 +45,7 @@ def setup_interative() -> dict:
         # TODO: Extract Measures from the real dataset
     
     options['filename'] = interactor.filename_input()
+    options['NGEN'] = interactor.generation_input()
 
     # Separating Measures
     if measures != None:

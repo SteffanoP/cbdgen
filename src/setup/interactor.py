@@ -75,6 +75,9 @@ def measures_input() -> list:
     # Appends every Complexity Measure in measures list
     return [cm(measure) for measure in input_Stream]
 
+def generation_input() -> int:
+    return int(input("Com quantas gerações você deseja otimizar o dataset?\n"))
+
 def __input_with_default__(input_text: str, default_value, data_type: type):
     try:
         return data_type(input(input_text))

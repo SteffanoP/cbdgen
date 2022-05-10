@@ -20,7 +20,7 @@ class InstancesGenerator:
         5: '_mlabel_classf'
     }
 
-    def __init__(self, options: dict):
+    def __init__(self, samples, attributes, classes=None, maker_option=None):
         """
         Constructs the generator based on properties desired.
 
@@ -30,10 +30,10 @@ class InstancesGenerator:
                 properties desired to generate a dataset (e.g. samples,
                 attributes, classes).
         """
-        self._samples = options['samples']
-        self._attributes = options['attributes']
-        self._classes = options['classes']
-        self._optional_option = options['maker'][1]
+        self._samples = samples
+        self._attributes = attributes
+        self._classes = classes
+        self._optional_option = maker_option
 
     def generate(self, type_gen: int) -> DataFrame:
         """
