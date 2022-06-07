@@ -1,5 +1,7 @@
 # cbdgen-framework
 
+[🇬🇧 English](./README.md) - **🇧🇷 Português Brasileiro**
+
 Um Framework evolucionário escalável para geração de dados sintéticos baseada em complexidade.
 
 ## Instalação
