@@ -23,7 +23,7 @@ It is required `ECoL` package to correctly calculate data complexity, to do so y
 ./install_packages.r
 ```
 
-If you've successfully installed R, this Rscript will work fine, but if you get any error using the R environment, Try [Working with ECoL](./examples/ECoL-in-python.ipynb) notebook to setup `ECoL` package with Python.
+> If you've successfully installed R, this Rscript will work fine, but if you get any error using the R environment, Try [Working with ECoL](./examples/ECoL-in-python.ipynb) notebook to setup `ECoL` package with Python.
 
 ### Install Python dependencies
 
