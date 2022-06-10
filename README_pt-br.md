@@ -1,73 +1,40 @@
-# cbdgen-framework
+# Complexity-based Dataset Generation
 
 [🇬🇧 English](./README.md) - **🇧🇷 Português Brasileiro**
 
 Um Framework evolucionário escalável para geração de dados sintéticos baseada em complexidade.
 
+## Requisitos
+
+Devido ao estado de desenvolvimento do framework, alguns passos são necessários/opcionais para o correto funcionamento do framework. Aqui listamos os requisitos para rodar o projeto, assim como alguns tutoriais:
+
+1. [Install R](./docs/setup-r_pt-br.md)
+2. Install Python
+3. [Python Environment (Optional)](./docs/setup-python-venv_pt-br.md)
+4. [Setup `cbdgen`](#instalação)
+
 ## Instalação
 
-Para reproduzir o framework pela primeira vez é necessário reproduzir alguns passos para o completo funcionamento do programa.
+### Instalação dos pacotes `R`
 
-### Setup R
+O Pacote `ECoL` é necessário para calcular corretamente a complexidade dos dados, para fazer isso utilize o seguinte comando:
 
-O `cbdgen` é um software que opera com base em diversos pacotes produzidos pela comunidade acadêmica, um deles é o pacote de complexidade `ECoL`, do qual é responsável de analisar a complexidade de um dataset. Esse é um pacote nativo da linguagem de programação `R` e portanto é necessário que o nosso framework de base em `python` possa reconhecer esse pacote. Uma forma de fazer isso é utilizar um pacote de conversão de Python para R, é o caso do pacote `rpy2` que pode ser instalado nativamente por meio do `pip`, todavia antes de realizar sua instalação é necessário possuir as ferramentas da linguagem de programação `R`, logo é necessário instalar o `R` e adicionar a sua path.
+```console
+./install_packages.r
+```
 
-1. Atualize o cache do gerenciador de pacotes
+> Se você instalou corretamente o ambiente `R`, esse `Rscript` irá funcionar corretamente, mas se você obter algum erro usando o ambiente `R`, tente [Working with ECoL](./examples/ECoL-in-python.ipynb) notebook para instalar o pacote `ECoL` com Python.
 
-    ```bash
-    sudo apt-get update
-    ```
+### Instalação das Dependências Python
 
-2. Instale o ambiente `R`
+Vamos usar o `pip` para instalar nossos pacotes baseado em nossos `requirements.txt`.
 
-    ```bash
-    sudo apt -y install r-base
-    ```
-
-3. Verifique a instalação do ambiente `R`
-
-    ```bash
-    user@Ubuntu:~$ R
-    ```
-
-Caso você seja um usuário Windows, tente por meio do CRAN em: <https://cran.r-project.org/bin/windows/base/>
-
-Caso você deseja obter mais detalhes acerca do pacote `ECoL` em Python, este repositório possuí um Notebook que detalha o funcionamento em: [ECoL-in-python.ipynb](examples/ECoL-in-python.ipynb)
-
-### (Opcional) Crie um ambiente virtual Python
-
-Para irmos mais a fundo no desenvolvimento do framework, é interessante se trabalhar com um ambiente de desenvolvimento em python. Para isso Python possuí a ferramenta perfeita para isso que é o ambiente `venv`, que é um ambiente virtual python para desenvolvimento.
-
-1. Crie um novo ambiente virtual `venv`
-
-    Para isso é necessário especificar um diretório onde você deseja criar o seu ambiente virtual
-
-    ```bash
-    python3 -m venv /path/to/environment/venvCBDGEN
-    ```
-
-2. Acesse o ambiente virtual
-
-    Verifique se você consegue acessar seu ambiente virtual com:
-
-    ```bash
-    source /path/to/environment/venvCBDGEN/bin/activate
-    ```
-
-    Caso você consiga, você deverá ver uma alteração no seu terminal como a seguinte:
-
-    ```terminal
-    (venvCBDGEN) steffanop@asus-b85:~/GitHub/cbdgen-framework$
-    ```
-
-### Instalação dos pacotes necessários
-
-Python possuí um gerenciador de pacotes embutido, conhecido como `pip`, vamos utilizar esse gerenciador para que possamos instalar nossos pacotes, esse repositório possuí uma lista dos pacotes em `requirements.txt`, logo só basta usar o seguinte código:
-
-```bash
+```console
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
+
+Agora você está pronto para gerar Datasets sintéticos!
 
 ## Citação
 
@@ -86,3 +53,9 @@ year = {2020}
 ```
 
 Para mais detalhes veja a [CITATION.cff](CITATION.cff).
+
+## Referências
+
+## References
+
+Lorena, A. C., Garcia, L. P. F., Lehmann, J., Souto, M. C. P., and Ho, T. K. (2019). How Complex Is Your Classification Problem?: A Survey on Measuring Classification Complexity. ACM Computing Surveys (CSUR), 52:1-34.
