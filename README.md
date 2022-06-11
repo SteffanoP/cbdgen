@@ -1,8 +1,10 @@
 # Complexity-based Dataset Generation
 
+An Evolutionary Scalable Framework for Synthetic Data Generation based in Data Complexity. 
+
 **🇬🇧 English** - [🇧🇷 Português Brasileiro](./README_pt-br.md)
 
-An Evolutionary Scalable Framework for Synthetic Data Generation based in Data Complexity.
+`cbdgen` (**C**omplexity-**b**ased **D**ataset **Gen**eration) is a software, currently in development to become a framework, that implements a many-objective algorithm to generate synthetic datasets from characteristics (complexities).
 
 ## Requirements
 
