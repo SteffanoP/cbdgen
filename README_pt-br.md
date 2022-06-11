@@ -1,8 +1,10 @@
 # Complexity-based Dataset Generation
 
+Um Framework evolucionário escalável para geração de dados sintéticos baseada em complexidade.
+
 [🇬🇧 English](./README.md) - **🇧🇷 Português Brasileiro**
 
-Um Framework evolucionário escalável para geração de dados sintéticos baseada em complexidade.
+`cbdgen` (Complexity-based Dataset Generation) é um software, atualmente em desenvolvimento para se tornar um framework, que implementa um algoritmo para muitos objetivos que gera _datasets_ sintéticos baseado em características (complexidades de dados).
 
 ## Requisitos
 
