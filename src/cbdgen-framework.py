@@ -172,7 +172,7 @@ def results(options: dict, toolbox: base.Toolbox):
     mutpb = options['MUTPB']
     ngen = options['NGEN']
     random.seed(64)
-    pool = multiprocessing.Pool(processes=12)
+    pool = multiprocessing.Pool()
     toolbox.register("map", pool.map)
     # Initialize statistics object
     stats = tools.Statistics(lambda ind: ind.fitness.values)
