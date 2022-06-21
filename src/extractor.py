@@ -1,5 +1,6 @@
 """A Module dedicated to the extraction of complexity measures
 """
+import typing as t
 import numpy as np
 from pymfe.mfe import MFE
 
@@ -42,7 +43,7 @@ class CBDGENExtractor:
 
         self.mfe.fit(self.data, self.label)
 
-    def update_label(self, label: np.ndarray) -> None:
+    def update_label(self, label: t.Union[list, np.ndarray]) -> None:
         """
         Update label attributes of the dataset.
 
@@ -52,7 +53,7 @@ class CBDGENExtractor:
         """
         self.mfe.fit(self.data, label)
 
-    def complexity(self) -> tuple[float]:
+    def complexity(self) -> tuple[np.float64]:
         """
         Extracts complexity data based on previously fitted data and label
         attributes.
