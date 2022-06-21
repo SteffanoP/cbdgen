@@ -8,12 +8,12 @@ from deap import algorithms
 from deap import base
 from deap import creator
 from deap import tools
-from rpy2 import robjects
 
-import extractor
+import _internal
+
+from extractor import CBDGENExtractor
 import preprocess
 import setup.setup_framework as setup
-from meta_features.ecol import Ecol
 from instances_generator.generator import InstancesGenerator
 
 def generate_instances(samples, attributes, classes, maker: tuple[int,str]
@@ -38,33 +38,6 @@ def generate_instances(samples, attributes, classes, maker: tuple[int,str]
                                        maker_option=maker[1])
     return gen_instances.generate(maker[0])
 
-def complexity_extraction(measures: list[str], *,
-                          dataframe_label: tuple[pd.DataFrame,str]=None,
-                          complexity_values: dict) -> tuple[np.float64]:
-    """
-    Function that extracts complexity values of a Data Set, highly dependent
-    of a extractor module.
-
-    Parameters
-    ----------
-        measures : A list of complexity measures to extract from the Data Set.
-        dataframe_label : Refers to the DataFrame itself and its label.
-        complexity_values : Dictionary of complexity values (TODO: Simplify!)
-
-    Returns
-    -------
-        tuple[complexity_values]
-    """
-    if dataframe_label is not None:
-        # Copying Columns names
-        # df.columns = preprocess.copyFeatureNamesFrom(base_df, label_name=target)
-
-        # Extraction of Data Complexity Values
-        return tuple(extractor.complexity(dataframe_label[0],
-                                          dataframe_label[1],
-                                          measures))
-    return tuple(complexity_values[cm] for cm in measures)
-
 # TODO: Build a clever architecture for the filename
 def build_filename(filename: str='', *, ngen: int, metrics: list) -> str:
     """
@@ -84,28 +57,12 @@ def build_filename(filename: str='', *, ngen: int, metrics: list) -> str:
     return filename
 
 def my_evaluate(individual):
-    vetor = []
-    dataFrame['label'] = individual
-    ecol_dataFrame.update_label(individual)
-    robjects.globalenv['dataFrame'] = dataFrame
-
-    for global_value, metrica in zip(global_measures, metrics):
-        complexity_value = extractor.ecol_complexity(ecol_dataFrame, metrica)
-        vetor.append(abs(global_value - complexity_value))
-
-    return tuple(vetor)
+    extractor.update_label(individual)
+    return tuple([abs(g - l) for g,l in zip(global_measures,extractor.complexity())])
 
 def print_evaluate(individual):
-    vetor = []
-    dataFrame['label'] = individual
-    ecol_dataFrame.update_label(individual)
-    robjects.globalenv['dataFrame'] = dataFrame
-
-    for metrica in metrics:
-        complexity_value = extractor.ecol_complexity(ecol_dataFrame, metrica)
-        vetor.append(abs(complexity_value))
-
-    return tuple(vetor)
+    extractor.update_label(individual)
+    return tuple(extractor.complexity())
 
 def setup_engine(options):
     """
@@ -215,36 +172,35 @@ def results(options: dict, toolbox: base.Toolbox):
 
 def main():
     options = setup.get_options()
+    metrics = options['measures']
 
     if options['filepath'] != '':
         base_df = pd.read_csv(options['filepath'])
+        base_complx = _internal.extract_complexity_dataframe(base_df,
+                                                             options['label_name'],
+                                                             metrics)
+        for metric, complx in zip(metrics, base_complx):
+            print(metric, complx)
+            options[metric] = complx
 
-    global dataFrame
-    dataFrame = generate_instances(options['samples'], options['attributes'],
+    global global_measures
+    global_measures = [options[measure] for measure in metrics]
+
+    dataframe = generate_instances(options['samples'], options['attributes'],
                                    options['classes'], options['maker'])
 
     complexity_values = {}
-    global metrics
-    metrics = options['measures']
     for measure in metrics:
         complexity_values[measure] = options[measure]
-    global global_measures
-    global_measures = complexity_extraction(metrics,
-                                            dataframe_label=(
-                                                base_df, options['label_name']
-                                            ),
-                                            complexity_values=complexity_values
-                                            )
+
+    global extractor
+    label = dataframe.pop(options['label_name']).values
+    data = dataframe.values
+    extractor = CBDGENExtractor(data, label, features=metrics)
 
     filename = build_filename(options['filename'],
                               ngen=options['NGEN'],
                               metrics=metrics)
-
-    # This Ecol object should be called according to the variable dataFrame.
-    # If dataFrame is renamed, then ecol_dataFrame should be renamed
-    # accordingly.
-    global ecol_dataFrame
-    ecol_dataFrame = Ecol(dataframe=dataFrame, label='label')
 
     print(metrics, len(metrics))
     print(global_measures)
