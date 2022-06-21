@@ -1,68 +1,65 @@
+"""A Module dedicated to the extraction of complexity measures
 """
-Extractor is a module that contains functions that extract meta-features values
-from Data Sets.
+import numpy as np
+from pymfe.mfe import MFE
 
-Features
---------
-    complexity : extract data complexity values.
-    ecol_complexity : extract data complexity values given a Ecol object.
-"""
-from pandas import DataFrame
-from meta_features.ecol import Ecol
-
-COMPLEXITY_MEASURES_PREFIX = {
-    'F': 'feature_based',
-    'N': 'neighborhood',
-    'L': 'linearity',
-    'T': 'dimensionality',
-    'C': 'class_balance',
-    'S': 'smoothness'
-}
-
-def complexity(dataframe: DataFrame,
-                         label: str,
-                         measures: list[str]) -> list:
+class CBDGENExtractor:
     """
-    Complexity extractor is a function that is able to extract Data Complexity
-    Values from a given Data Set. For now, this function is strongly dependent
-    of the ECoL package/object to extract each Complexity Measure.
+    Core class dedicated for the extraction of complexity data values.
 
-    This function extracts a list of values by creating an ECoL object and
-    specifying a list of measures desired to extract.
-
-    Parameters
+    Attributes
     ----------
-        dataframe : Data Set to extract data complexity.
-        label : Column name of the class attribute of the Data Set.
-        measures : List of Complexity Measures to extract data complexity from
-        the Data Set.
+    data : :obj:`np.ndarray`
+        Attributes of the dataset.
 
-    Returns
-    -------
-        list : List of Data Complexity Values extracted.
+    label : :obj:`np.ndarray`
+        Label attributes of the dataset.
+
+    features : :obj:`list`
+        A list of complexity extraction methods names for complexity
+        extraction.
+
+    mfe : :obj:`MFE`
+        Meta-feature object extractor dedicated to extract meta-features, in
+        this scenario to fit and extract complexity data.
+
+    summary : :obj:`list`, optional
+        Summary functions names for features summarization.
     """
-    ecol = Ecol(dataframe=dataframe, label=label)
-    return [getattr(ecol, COMPLEXITY_MEASURES_PREFIX[measure[0]])(measure)
-            for measure in measures]
 
-def ecol_complexity(ecol: Ecol, measure: str):
-    """
-    This function extracts a complexity value given an ECoL.py object to
-    extract from.
+    def __init__(self, data: np.ndarray, label: np.ndarray, features: list,
+                 summary: list = None):
+        self.data = data
+        self.label = label
+        self.mfe = MFE(groups=['complexity'],
+                        features=features,
+                        summary=['mean'])
 
-    Parameters
-    ----------
-        ecol : Ecol object to extract our measures.
-        measure : the measure to be extracted.
+        if summary is not None:
+            self.mfe = MFE(groups=['complexity'],
+                            features=features,
+                            summary=summary)
 
-    Returns
-    -------
-        Complexity value of the measure.
+        self.mfe.fit(self.data, self.label)
 
-    Details
-    -------
-    Complexity extractor is a function that is able to extract Data Complexity
-    Values from a given Data Set. For now, this function is strongly dependent
-    of the ECoL package/object to extract each Complexity Measure.
-    """
-    return getattr(ecol, COMPLEXITY_MEASURES_PREFIX[measure[0]])(measure)
+    def update_label(self, label: np.ndarray) -> None:
+        """
+        Update label attributes of the dataset.
+
+        Parameters
+        ----------
+        label : :obj:`np.ndarray`
+        """
+        self.mfe.fit(self.data, label)
+
+    def complexity(self) -> tuple[float]:
+        """
+        Extracts complexity data based on previously fitted data and label
+        attributes.
+
+        Returns
+        -------
+        :obj:`tuple` of :obj:`float` complexity data values.
+        """
+        complx = self.mfe.extract()
+        return tuple(complx[1][::-1])
