@@ -214,10 +214,10 @@ def main():
         pickle.dump(compiled_results, outfile)
         outfile.close()
 
-    dataFrame['label'] = result[0][0]
+    dataframe['label'] = result[0][0]
     # Scale to original Dataset (Optional) #TODO: Improve preprocessing
     # df = preprocess.scaleColumnsFrom(base_df, df, label_column='label')
-    dataFrame.to_csv(str(filename)+".csv")
+    dataframe.to_csv(str(filename)+".csv")
 
 if __name__ == '__main__':
     main()
