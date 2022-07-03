@@ -20,31 +20,52 @@ class Ecol:
     (ECoL) implemented in R as a Complexity Extractor package. This package
     does treat and convert ECoL to a similar level using rpy2r package to
     convert its functions.
+
+    Attributes
+    ----------
+    r_df : :obj:`rpy2.robjects.vectors.DataFrame`
+        Dataset of attributes converted to a R data.frame with target
+        attributes.
+
+    fml : :obj:`rpy2.robjects.Formula`
+        Formula that represents the target attribute column.
+
+    ecol : :obj:`rpy2.robjects.ECoL`
+        ECoL object converted using rpy2 package.
+
+    features : :obj:`list`
+        A list of features extraction method names available for complexity
+        data extraction.
+
     """
     def __init__(self,
                  dataframe: DataFrame,
-                 label: str,
-                 summary: str = None) -> None:
+                 label_name: str,
+                 features: list = None) -> None:
         pandas2ri.activate()
 
         # Set up of DataFrame and ECoL formula
-        self.r_df, self.fml = self._conversion_formula(dataframe, label)
+        self.fit(dataframe, label_name)
         self.ecol = rpackages.importr('ECoL')
 
+        # Create list of features to be extracted
+        self.features = features
+
+        # TODO: Summarization of complexity. Only mean values are implemented.
+
+    def fit(self, data: DataFrame, label_name: str) -> None:
         """
-        Summarization of complexity multiple complexity values
-        Default summary is None which corresponds to return only mean values
+        Fits dataset into an ECoL model.
+
+        Parameters
+        ----------
+        data : :obj:`DataFrame`
+            Dataset with target column to be attributed to ECoL model.
+
+        label : :obj:`str`
+            The name of the target attribute column in the dataset.
         """
-        if summary is None:
-            self.feature_based = self._feature_based
-            self.neighborhood = self._neighborhood
-            self.linearity = self._linearity
-            self.dimensionality = self._dimensionality
-            self.class_balance = self._class_balance
-            self.structural = self._structural
-            self.feature_correlation = self._feature_correlation
-            self.feature_correlation = self._smoothness
-        #TODO: Factory functions for summaries (e.g. "mean", "sd", "median")
+        self.r_df, self.fml = self._conversion_formula(data, label_name)
 
     def update_label(self, label) -> None:
         """
@@ -57,9 +78,76 @@ class Ecol:
         """
         self.r_df[self.r_df.colnames.index('label')] = np.array(label)
 
+    def extract(self) -> tuple[np.float64]:
+        """
+        Extracts complexity data from the previously fitted dataset.
+
+        Returns
+        -------
+        :obj:`tuple`(:obj:`np.float64`)
+            A Tuple containing a complexity data values according to the
+            features previously configured by the object.
+        """
+        if self.features is None:
+            return None
+
+        print(self.features)
+
+        complx_values = [self._extract(feat) for feat in self.features]
+        return tuple(complx_values)
+
     #TODO: Create a method to extract all measures from a dataset
-    #TODO: Create a method to extract a list of measures from multiple subgroups
-    #TODO: Implement extraction of multiple measures for subgroups
+    def _extract(self, feature: str) -> np.float64:
+        """
+        Internal method to determine and extract complexity from a feature.
+
+        Parameters
+        ----------
+        feature : :obj:`feature`
+            The name of the complexity measure to extract its complexity value.
+
+        Returns
+        -------
+        :obj:`np.float64`
+            A complexity value based on its group and complexity measure. It
+            can be a the value or the mean value.
+        """
+        complexity_measures_groups = {
+            'F1': self._feature_based,
+            'F1v': self._feature_based,
+            'F2': self._feature_based,
+            'F3': self._feature_based,
+            'F4': self._feature_based,
+            'N1': self._neighborhood,
+            'N2': self._neighborhood,
+            'N3': self._neighborhood,
+            'N4': self._neighborhood,
+            'T1': self._neighborhood,
+            'LSC': self._neighborhood,
+            'L1': self._linearity,
+            'L2': self._linearity,
+            'L3': self._linearity,
+            'T2': self._dimensionality,
+            'T3': self._dimensionality,
+            'T4': self._dimensionality,
+            'C1': self._class_balance,
+            'C2': self._class_balance,
+            'Density': self._structural,
+            'ClsCoef': self._structural,
+            'Hubs': self._structural,
+            # FIXME: Same Prefix as class balance
+            # 'C1': self._feature_correlation,
+            # 'C2': self._feature_correlation,
+            # 'C3': self._feature_correlation,
+            # 'C4': self._feature_correlation,
+            'S1': self._smoothness,
+            'S2': self._smoothness,
+            'S3': self._smoothness,
+            'S4': self._smoothness
+        }
+        _extractor = complexity_measures_groups.get(feature)
+        return _extractor(feature)
+
     def _feature_based(self, *measure: str) -> np.float64:
         """
         Method to extract feature based measures (some known as overlapping).
