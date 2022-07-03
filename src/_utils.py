@@ -1,6 +1,6 @@
 """A module dedicated for utils for cbdgen
 """
-from meta_features.ecol import Ecol
+from meta_features.ecol import ECoL
 
 COMPLEXITY_MEASURES_PREFIX = {
     'F': 'feature_based',
@@ -11,7 +11,7 @@ COMPLEXITY_MEASURES_PREFIX = {
     'S': 'smoothness'
 }
 
-def ecol_complexity(ecol: Ecol, measure: str):
+def ecol_complexity(ecol: ECoL, measure: str):
     """
     This function extracts a complexity value given an ECoL.py object to
     extract from.
