@@ -14,7 +14,7 @@ from pandas import DataFrame
 from rpy2.robjects import pandas2ri, Formula
 import rpy2.robjects.packages as rpackages
 
-class Ecol:
+class ECoL:
     """
     Package Ecol is a conversion from the original Extended Complexity Library
     (ECoL) implemented in R as a Complexity Extractor package. This package
