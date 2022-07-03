@@ -91,8 +91,6 @@ class ECoL:
         if self.features is None:
             return None
 
-        print(self.features)
-
         complx_values = [self._extract(feat) for feat in self.features]
         return tuple(complx_values)
 
