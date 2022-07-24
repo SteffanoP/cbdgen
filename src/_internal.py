@@ -3,6 +3,8 @@
 import numpy as np
 from pandas import DataFrame
 
+from pymfe.mfe import MFE
+
 from extractor import CBDGENExtractor
 
 def extract_complexity_dataframe(dataframe: DataFrame, target_name: str,
@@ -23,10 +25,9 @@ def extract_complexity_dataframe(dataframe: DataFrame, target_name: str,
         extraction.
     """
     target = dataframe.pop(target_name).values
-    data = dataframe.values
-    return _extract_pymfe_complexity(data, target, features)
+    return _extract_pymfe_complexity(dataframe, target, features)
 
-def _extract_pymfe_complexity(data: np.ndarray, target: np.ndarray,
+def _extract_pymfe_complexity(data: DataFrame, target: np.ndarray,
                               features: list[str]) -> tuple[np.float64]:
-    extractor = CBDGENExtractor(data, target, features)
+    extractor = CBDGENExtractor(MFE, data, target, features)
     return extractor.complexity()
