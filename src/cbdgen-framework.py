@@ -8,6 +8,8 @@ from deap import algorithms
 from deap import base
 from deap import creator
 from deap import tools
+from pymfe.mfe import MFE
+# from meta_features.ecol import ECoL
 
 import _internal
 
@@ -195,8 +197,8 @@ def main():
 
     global extractor
     label = dataframe.pop(options['label_name']).values
-    data = dataframe.values
-    extractor = CBDGENExtractor(data, label, features=metrics)
+    extractor = CBDGENExtractor(MFE, dataframe, label, metrics)
+    # extractor = CBDGENExtractor(ECoL, dataframe, label, metrics)
 
     filename = build_filename(options['filename'],
                               ngen=options['NGEN'],
