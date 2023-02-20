@@ -43,14 +43,14 @@ Agora você está pronto para gerar Datasets sintéticos!
 Para citar o `cbdgen-framework` em suas publicações utilize:
 
 ```BibTeX
-@inproceedings{Franca_A_Many-Objective_optimization_2020,
-author = {França, Thiago R. and Miranda, Péricles B. C. and Prudêncio, Ricardo B. C. and Lorena, Ana C. and Nascimento, André C. A.},
-booktitle = {2020 IEEE Congress on Evolutionary Computation (CEC)},
-doi = {10.1109/CEC48606.2020.9185543},
-month = {7},
-pages = {1--8},
-title = {{A Many-Objective optimization Approach for Complexity-based Data set Generation}},
-year = {2020}
+@inproceedings{Pereira_A_Many-Objective_Optimization_2022,
+author = {Pereira, Steffano X. and Miranda, Péricles B. C. and França, Thiago R. F. and Bastos-Filho, Carmelo J. A. and Si, Tapas},
+booktitle = {2022 IEEE Latin American Conference on Computational Intelligence (LA-CCI)},
+doi = {10.1109/la-cci54402.2022.9981848},
+month = {11},
+pages = {1--6},
+title = {{A Many-Objective Optimization Approach to Generate Synthetic Datasets based on Real-World Classification Problems}},
+year = {2022}
 }
 ```
 
