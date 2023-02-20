@@ -1,38 +1,38 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-- family-names: "Thiago R."
-  given-names: "França"
-  affiliation: "Universidade Federal Rural de Pernambuco"
 - family-names: "Steffano X."
   given-names: "Pereira"
   affiliation: "Universidade Federal Rural de Pernambuco"
+- family-names: "Thiago R."
+  given-names: "França"
+  affiliation: "Universidade Federal Rural de Pernambuco"
 title: "Many-Objective Optimizer Approach for Complexity-based Data set Generation"
 version: 0.1.0
-date-released: 2021-06-18
+date-released: 2022-05-19
 url: "https://github.com/SteffanoP/cbdgen-framework"
 preferred-citation:
   type: conference-paper
-  title: "A Many-Objective optimization Approach for Complexity-based Data set Generation"
-  doi: "10.1109/CEC48606.2020.9185543"
-  year: 2020
-  month: 7
+  title: "A Many-Objective Optimization Approach to Generate Synthetic Datasets based on Real-World Classification Problems"
+  doi: "10.1109/la-cci54402.2022.9981848"
+  year: 2022
+  month: 11
   start: 1 # First page number
-  end: 8 # Last page number
-  collection-title: "2020 IEEE Congress on Evolutionary Computation (CEC)"
+  end: 6 # Last page number
+  collection-title: "2022 IEEE Latin American Conference on Computational Intelligence (LA-CCI)"
   authors:
-  - family-names: "França"
-    given-names: "Thiago R."
-    affiliation: "Universidade Federal Rural de Pernambuco"
+  - family-names: "Pereira"
+    given-names: "Steffano X."
+    affiliation: "Federal Rural University of Pernambuco, Recife, Brazil"
   - family-names: "Miranda"
     given-names: "Péricles B. C."
-    affiliation: "Universidade Federal Rural de Pernambuco"
-  - family-names: "Prudêncio"
-    given-names: "Ricardo B. C."
-    affiliation: "Universidade Federal de Pernambuco"
-  - family-names: "Lorena"
-    given-names: "Ana C."
-    affiliation: "Instituto Tecnológico de Aeronáutica"
-  - family-names: "Nascimento"
-    given-names: "André C. A."
-    affiliation: "Universidade Federal Rural de Pernambuco"
+    affiliation: "Federal Rural University of Pernambuco, Recife, Brazil"
+  - family-names: "França"
+    given-names: "Thiago R. F."
+    affiliation: "Federal Rural University of Pernambuco, Recife, Brazil"
+  - family-names: "Bastos-Filho"
+    given-names: "Carmelo J. A."
+    affiliation: "University of Pernambuco, Recife, Brazil"
+  - family-names: "Si"
+    given-names: "Tapas"
+    affiliation: "Bankura Unnayani Institute of Engineering, Bankura, West Bengal, India"
